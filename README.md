@@ -1,3 +1,6 @@
+[![Gem Version](https://badge.fury.io/rb/smess.png)](http://badge.fury.io/rb/smess)
+[![Code Climate](https://codeclimate.com/repos/52249703f3ea003d03072821/badges/efe9fa39e239e1515d4e/gpa.png)](https://codeclimate.com/repos/52249703f3ea003d03072821/feed)
+
 # Smess - A mess of SMS messaging
 
 This is a messy SMS messenger supporting every aggregator I have gotten my hands on.

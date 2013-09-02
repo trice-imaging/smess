@@ -1,45 +1,7 @@
 # encoding: UTF-8
 
 module Smess
-
   class << self
-
-    # cleans and forces the selected country prefix on the number given
-    # if international is set a lighter cleaning is done to preserve any existing country code
-    # this is not entirely problem-free for US area codes without leading 0.
-    def clean_phone(num)
-      num = num.to_s
-
-      return nil if /\{[a-z]+:.+\}/.match(num)
-
-      # make num all digits
-      num = num.gsub(/\D/,"")
-
-      if num.length > 0 && num[0..1] == "00"
-        num = num[2..-1]
-      elsif num.length > 0 && num[0] == "0"
-        # cut away leading zeros
-        num = num[1..-1] # while num[0] == "0"
-        # Add country code unless the start of the number is the correct country code
-        unless num[0..Smess.config.country_code.to_s.length-1] == Smess.config.country_code.to_s
-          num = Smess.config.country_code.to_s + num
-        end
-      elsif !Smess.config.international
-        # Add country code unless the start of the number is the correct country code
-        unless num[0..Smess.config.country_code.to_s.length-1] == Smess.config.country_code.to_s
-          num = Smess.config.country_code.to_s + num
-        end
-      end
-
-      # number must be in a valid range
-      unless (10..15) === num.length
-        return nil
-      end
-
-      num
-    end
-
-
 
     # returns an array of strings of gsm-compatible lengths
     # performance issue: utf8_safe_split also loops over the split point
