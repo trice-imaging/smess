@@ -102,3 +102,13 @@ Being Swedish, disclaimers are required.
 * Much of the code is old and crappy. It started in 2008 in PHP, ported to Ruby in 2010.
 * There are OK specs for the simple stuff. No specs for the more error-prone API calls. There are live tests that can be run to verify end-to-end messaging, though.
 * Does not handle the other part of messaging... accepting and processing Delivery Reports. (I have the code... it is just not extracted yet.)
+
+
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Added some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
