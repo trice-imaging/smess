@@ -93,7 +93,7 @@ module Smess
       response_code = response.body.split(/\n/).first
       response_code = "0" if response_code == "200"
       # Successful response
-      result = {
+      {
         message_id: message_id,
         response_code: response_code.to_s,
         response: {body: response.body},
