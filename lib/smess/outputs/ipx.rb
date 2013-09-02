@@ -4,10 +4,9 @@ module Smess
 
     def initialize
       @endpoint = account[:sms_url]
-
       @credentials = {
-        :name => account[:username],
-        :pass => account[:password]
+        name: account[:username],
+        pass: account[:password]
       }
     end
 
@@ -22,13 +21,44 @@ module Smess
       }
     end
 
-    def build_sms_payload
-      # SOAP data
-      @sms_options = {
-        "correlationId" => Time.now.strftime('%Y%m%d%H%M%S') + @sms.to,
+    def deliver_sms(sms_arg)
+      return false unless sms_arg.kind_of? Sms
+      @sms = sms_arg
+
+      set_originator(sms.originator)
+
+      perform_operator_adaptation sms.to
+
+      results = []
+      parts.each_with_index do |part, i|
+        return false if part.empty?
+        # if we have several parts, send them as concatenated sms
+        soap_body["userDataHeader"] = concatenation_udh(i+1, parts.length) if parts.length > 1
+        soap_body["userData"] = part
+        soap_body["correlationId"] = Time.now.strftime('%Y%m%d%H%M%S') + sms.to + (i+1).to_s
+        results << send_one_sms
+
+        # halt and use fallback on error...
+        unless results.last[:response_code].to_s == "0"
+          logger.info "IPX_ERROR: #{results.last}"
+          return fallback_to_twilio
+        end
+      end
+
+      # we don't actually return the status for any of additional messages which is cheating
+      results.first
+    end
+
+    private
+
+    attr_reader :sms
+
+    def soap_body
+      @soap_body ||= {
+        "correlationId" => Time.now.strftime('%Y%m%d%H%M%S') + sms.to,
         "originatingAddress" => account[:shortcode],
         "originatorTON" => "0",
-        "destinationAddress" => nil,
+        "destinationAddress" => sms.to,
         "userData" => "",
         "userDataHeader" => "#NULL#",
         "DCS" => "-1",
@@ -37,7 +67,7 @@ module Smess
         "deliveryTime" => "#NULL#",
         "statusReportFlags" => "1", # 1
         "accountName" => account[:account_name],
-        "tariffClass" => "USD0",
+        "tariffClass" => "USD0", # needs to be extracted and variable per country
         "VAT" => "-1",
         "referenceId" => "#NULL#",
         "serviceName" => account[:service_name],
@@ -49,70 +79,12 @@ module Smess
       }
     end
 
-    def deliver_sms(sms)
-      return false unless sms.kind_of? Sms
-
-      @sms = sms
-      build_sms_payload
-
-      set_originator sms.originator
-      @sms_options["destinationAddress"] = sms.to
-
-      perform_operator_adaptation sms.to
-
-      # validate sms contents
-      parts = Smess.split_sms(sms.message.strip_nongsm_chars)
-      return false if parts[0].empty?
-      # if we have several parts, send them as concatenated sms
-      if parts.length > 1
-        logger.info "Num Parts: #{parts.length.to_s}"
-        # create concat-sms smpp header
-        ref_id = Random.new.rand(255).to_s(16).rjust(2,"0")
-        num_parts = parts.length
-        @sms_options["userDataHeader"] = "050003#{ref_id}#{num_parts.to_s(16).rjust(2,'0')}01" # {050003}{ff}{02}{01} {concat-command}{id to link all parts}{total num parts}{num of current part}
-      end
-
-      @sms_options["userData"] = parts.shift
-
-      result = send_one_sms
-      result[:data] = @sms_options.dup
-      result[:data].delete "password"
-      result[:data]["userData"] = sms.message.strip_nongsm_chars
-
-      # fallback...
-      unless result[:response_code].to_s == "0"
-        logger.info "IPX_ERROR: #{result}"
-        return fallback_to_twilio
-      end
-
-      # send aditional parts if we have them
-      if parts.length > 0 && result[:response_code] != "-1"
-        logger.info "Sending more parts..."
-        set_originator sms.originator
-        @sms_options["destinationAddress"] = sms.to
-
-        more_results = []
-        parts.each_with_index do |part,i|
-          logger.info "Sending Part #{(i+2).to_s}"
-          @sms_options["userData"] = part
-          @sms_options["userDataHeader"] = "050003#{ref_id}#{num_parts.to_s(16).rjust(2,'0')}#{(i+2).to_s(16).rjust(2,'0')}"
-          @sms_options["correlationId"] = Time.now.strftime('%Y%m%d%H%M%S') + @sms.to + (i+1).to_s
-          more_results << send_one_sms
-          # we don't actually return the status for any of these which is cheating
-        end
-      end
-
-      result
-    end
-
-  private
 
     def soap_client
       Savon.configure do |config|
         config.log_level = :info
         config.raise_errors = false
       end
-
 
       endpoint = @endpoint
       mm7ns = wsdl_namespace
@@ -133,8 +105,8 @@ module Smess
     # and being able to reduce non-deliveries by more than half
     # is a big deal when sending transactional messages.
     def fallback_to_twilio
-      @sms.output = :twilio
-      @sms.deliver
+      sms.output = :twilio
+      sms.deliver
     end
 
     def get_response_hash_from(response)
@@ -146,8 +118,8 @@ module Smess
     end
 
     def set_originator(originator)
-      @sms_options["originatingAddress"] = originator
-      @sms_options["originatorTON"] = (originator.length == 5 && originator.to_i.to_s == originator) ? "0" : "1"
+      soap_body["originatingAddress"] = originator
+      soap_body["originatorTON"] = (originator.length == 5 && originator.to_i.to_s == originator) ? "0" : "1"
     end
 
     def xmlns
@@ -158,57 +130,80 @@ module Smess
       "http://www.3gpp.org/ftp/Specs/archive/23_series/23.140/schema/REL-6-MM7-1-2"
     end
 
-    def send_one_sms
-      client = soap_client
-      sms_options = @sms_options
-      begin
-        response = client.request "SendRequest", "xmlns" => xmlns do
-          soap.body = sms_options
-        end
-      rescue Exception => e
-        result = {
-          :response_code => "-1",
-          :response  => {
-            :temporaryError =>"true",
-            :responseCode => "-1",
-            :responseText => "MM: System Communication Error. #{e.inspect}"
-          }
-        }
-        # LOG error here?
-        return result
-      end
-      return parse_sms_response response
+    def parts
+      @parts ||= split_parts
     end
 
+    def split_parts
+      Smess.split_sms(sms.message.strip_nongsm_chars).reject {|s| s.empty? }
+    end
+
+    # {050003}{ff}{02}{01} {concat-command}{id to link all parts}{total num parts}{num of current part}
+    def concatenation_udh(num, total)
+      "050003#{ref_id}#{total.to_s(16).rjust(2,'0')}#{(num).to_s(16).rjust(2,'0')}"
+    end
+
+    def ref_id
+      @ref_id ||= Random.new.rand(255).to_s(16).rjust(2,"0")
+    end
+
+    def send_one_sms
+      client = soap_client
+      soap_body_var = soap_body
+      begin
+        response = client.request "SendRequest", "xmlns" => xmlns do
+          soap.body = soap_body_var
+        end
+        result = parse_sms_response(response)
+      rescue Exception => e
+        result = result_for_error(e)
+        # LOG error here?
+      end
+      result
+    end
 
     def parse_sms_response(response)
-      # logger.debug " --- "
-      # logger.debug response.to_hash
-      # logger.debug " --- "
       if response.http_error? || response.soap_fault?
-        result = {
-          :response_code => "-1",
-          :response  => {
-            :temporaryError =>"true",
-            :responseCode => "-1",
-            :responseText => response.http_error || response.soap_fault.to_hash
-          }
-        }
-        # LOG error here?
-        return result
+        e = Struct.new(:code, :message).new("-1", response.http_error || response.soap_fault.to_hash)
+        result = result_for_error(e)
+      else
+        result = normal_result(response)
       end
+      result
+    end
 
+    def result_for_error(e)
+      {
+        response_code: '-1',
+        response: {
+          temporaryError: 'true',
+          responseCode: e.code,
+          responseText: e.message
+        },
+        data: result_data
+      }
+    end
 
+    def normal_result(response)
       hash = response.to_hash[:send_response]
       message_id = ""
       message_id = hash[:message_id] if hash.has_key? :message_id
       response_code = hash[:response_code]
 
-      result = {
-        :message_id => message_id,
-        :response_code => response_code,
-        :response => hash
+      {
+        message_id: message_id,
+        response_code: response_code,
+        response: hash,
+        destination_address: sms.to,
+        data: result_data
       }
+    end
+
+    def result_data
+      data = soap_body.dup
+      data.delete "password"
+      data["userData"] = sms.message.strip_nongsm_chars
+      data
     end
 
 

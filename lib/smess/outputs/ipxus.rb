@@ -23,15 +23,10 @@ module Smess
     # Called before final message assembly
     # used to look up the operator and make changes to the MM7 for Verizon and T-mobile
     def perform_operator_adaptation(msisdn)
-      if @mms && @mms.slides.empty?
-        @mm7body["mm7:ServiceCode"] << ";contentMetaData=devicediscovery=true"
-        return false
-      else
-        operator_data = lookup_operator msisdn
-        unless operator_data[:operator].nil?
-          method_name = "adapt_for_#{operator_data[:operator].to_underscore.gsub(" ","_")}"
-          send(method_name,msisdn) if respond_to?(:"#{method_name}", true)
-        end
+      operator_data = lookup_operator msisdn
+      unless operator_data[:operator].nil?
+        method_name = "adapt_for_#{operator_data[:operator].to_underscore.gsub(" ","_")}"
+        send(method_name, msisdn) if respond_to?(:"#{method_name}", true)
       end
     end
 
@@ -54,49 +49,33 @@ module Smess
         response = client.request "ResolveOperatorRequest", "xmlns"=>"http://www.ipx.com/api/services/consumerlookupapi09/types" do
           soap.body = body
         end
+        result = parse_operator_response(response)
       rescue Exception => e
-        result = {
-          :response_code => "-1",
-          :response  => {
-            :temporaryError =>"true",
-            :responseCode => "-1",
-            :responseText => "MM: System Communication Error"
-          }
-        }
-        # LOG error here?
+        result = result_for_error(e)
+      ensure
         @endpoint = orig_endpoint
         @credentials = orig_credentials
-        return result
       end
-      @endpoint = orig_endpoint
-      @credentials = orig_credentials
-      return parse_operator_response response
+      result
     end
 
     def parse_operator_response(response)
       if response.http_error? || response.soap_fault?
-        result = {
-          :response_code => "-1",
-          :response  => {
-            :temporaryError =>"true",
-            :responseCode => "-1",
-            :responseText => response.http_error || response.soap_fault.to_hash
-          }
-        }
-        # LOG error here?
-        return result
+        e = Struct.new(:code, :message).new("-1", response.http_error || response.soap_fault.to_hash)
+        result = result_for_error(e)
+      else
+        result = response.to_hash[:resolve_operator_response]
       end
-
-      hash = response.to_hash[:resolve_operator_response]
+      result
     end
 
 
     def adapt_for_verizon(msisdn)
-      @sms_options["serviceMetaData"] = account[:service_meta_data_verizon]
+      soap_body["serviceMetaData"] = account[:service_meta_data_verizon]
     end
 
     def adapt_for_t_mobile_us(msisdn)
-      @sms_options["serviceMetaData"] = account[:service_meta_data_t_mobile_us]
+      soap_body["serviceMetaData"] = account[:service_meta_data_t_mobile_us]
     end
 
   end

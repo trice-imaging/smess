@@ -1,33 +1,6 @@
 module Smess
   class Iconectiv < Ipxus
 
-    def build_sms_payload
-      # SOAP data
-      @sms_options = {
-        "correlationId" => Time.now.strftime('%Y%m%d%H%M%S') + @sms.to,
-        "originatingAddress" => account[:shortcode],
-        "originatorTON" => "0",
-        "destinationAddress" => nil,
-        "userData" => "",
-        "userDataHeader" => "#NULL#",
-        "DCS" => "-1",
-        "PID" => "-1",
-        "relativeValidityTime" => "-1",
-        "deliveryTime" => "#NULL#",
-        "statusReportFlags" => "1", # 1
-        "accountName" => account[:account_name],
-        "tariffClass" => "USD0",
-        "VAT" => "-1",
-        "referenceId" => "#NULL#",
-        "serviceName" => account[:service_name],
-        "serviceCategory" => "#NULL#",
-        "serviceMetaData" => "#NULL#",
-        "campaignName" => "#NULL#",
-        "username" => account[:username],
-        "password" => account[:password]
-      }
-    end
-
     def account
       @account ||= {
         sms_url: 'http://66.70.32.42:32005/api/services2/SmsApi52?wsdl',
