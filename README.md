@@ -4,7 +4,19 @@ This is a messy SMS messenger supporting every aggregator I have gotten my hands
 
 In 2008 I started working on SMS and MMS messaging applications. Within the first 2 months it was apparent that I needed an abstraction that could route messages to different aggregators (messaging providers) to support different countries. No one API supports the entire word in any useful way.
 
-This is that abstraction finally cleaned up (a little) enabling it to be public. Everything from heavy hitters like IPX or mBlox to simple services like Clickatel or Twilio. A total of 7 aggregators supported.
+This is that abstraction finally cleaned up (a little) enabling it to be public. Everyone from mBlox to  Clickatell. The following 7 aggregators are supported.
+
+* Auto - will automatically select the best option for each country. Most often using Global Mouth.
+* Clickatell - http://www.clickatell.com
+* Global Mouth - http://www.globalmouth.com
+* Iconectiv - http://www.iconectiv.com
+* IPX - http://www.ipx.com (who knows what'll happen to them)
+* mBlox - http://www.mblox.com
+* SMS Global - https://www.smsglobal.com
+* Twilio - http://www.twilio.com
+
+There is also a _test_ aggregator that you should set evrything to use when running tests in your code.
+
 
 ## Who should use this?
 
