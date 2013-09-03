@@ -32,7 +32,7 @@ module Smess
       results = []
       parts.each_with_index do |part, i|
         return false if part.empty?
-        # if we have several parts, send them as concatenated sms
+        # if we have several parts, send them as concatenated sms using UDH codes
         soap_body["userDataHeader"] = concatenation_udh(i+1, parts.length) if parts.length > 1
         soap_body["userData"] = part
         soap_body["correlationId"] = Time.now.strftime('%Y%m%d%H%M%S') + sms.to + (i+1).to_s
@@ -41,7 +41,7 @@ module Smess
         # halt and use fallback on error...
         unless results.last[:response_code].to_s == "0"
           logger.info "IPX_ERROR: #{results.last}"
-          return fallback_to_twilio
+          return fallback_to_twilio || results.first
         end
       end
 
@@ -173,11 +173,12 @@ module Smess
     end
 
     def result_for_error(e)
+      code = e.code rescue "-1"
       {
         response_code: '-1',
         response: {
           temporaryError: 'true',
-          responseCode: e.code,
+          responseCode: code,
           responseText: e.message
         },
         data: result_data

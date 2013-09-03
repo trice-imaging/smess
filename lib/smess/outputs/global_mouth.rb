@@ -78,6 +78,7 @@ module Smess
     end
 
     def result_for_error(e)
+      code = e.code rescue "-1"
       {
         response_code: '-1',
         response: {

@@ -9,7 +9,7 @@ module Smess
         password: ENV["SMESS_ICONECTIV_PASS"],
         account_name: ENV["SMESS_ICONECTIV_ACCOUNT_NAME"],
         service_name: ENV["SMESS_SERVICE_NAME"],
-        service_meta_data_t_mobile: ENV["SMESS_ICONECTIV_SERVICE_META_DATA_T_MOBILE_US"],
+        service_meta_data_t_mobile_us: ENV["SMESS_ICONECTIV_SERVICE_META_DATA_T_MOBILE_US"],
         service_meta_data_verizon: ENV["SMESS_ICONECTIV_SERVICE_META_DATA_VERIZON"]
       }
     end

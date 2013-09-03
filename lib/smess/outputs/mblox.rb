@@ -103,7 +103,7 @@ module Smess
 
     def hash_data_for(xml_params)
       rand = (SecureRandom.random_number*100000000).to_i
-      @message_id = rand # "#{Time.now.to_i}#{xml_params.to}#{rand}"
+      @message_id = rand
 
       xml_hash = {
         notification_request: {
