@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.author = "Martin Westin"
   s.email = "martin@eimermusic.com"
   s.homepage = "https://github.com/eimermusic/smess"
+  s.license = 'MIT'
 
   s.add_development_dependency 'rspec', '>= 2.4.0'
   s.add_development_dependency 'jahtml_formatter'

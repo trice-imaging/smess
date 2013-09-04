@@ -47,7 +47,7 @@ class String
     # Should this be a patch to String?
 
     # keeping them here in canse I need them
-    #$basic_alpha = array(
+    # basic alpha
     # '@','£','$','¥','è','é','ù','ì','ò','Ç',"\n",'Ø','ø',"\r",'Å','å',
     # 'Δ','_','Φ','Γ','Λ','Ω','Π','Ψ','Σ','Θ','Ξ','Æ','æ','ß','É',' ',
     # '!','"','#','¤','%','&','\'','(',')','*','+',',','-','.','/','0',
@@ -56,9 +56,9 @@ class String
     # 'Q','R','S','T','U','V','W','X','Y','Z','Ä','Ö','Ñ','Ü','§','¿',
     # 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
     # 'q','r','s','t','u','v','w','x','y','z','ä','ö','ñ','ü','à'
-    #);
-    #$extended_alpha = array('|','^','€','{','}','[',']','~','\\');
-    #$all_alpha = array_merge($basic_alpha, $extended_alpha);
+    #
+    # extended alpha
+    # '|','^','€','{','}','[',']','~','\\'
 
     allowed = '@£$¥èéùìòÇ'+"\n"+'Øø'+"\r"+'ÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ'+' '+Regexp.escape('!"#¤%&\'()*+,-.')+'\/'+Regexp.escape('0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà|^€{}[]~\\')
 
