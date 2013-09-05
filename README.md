@@ -1,5 +1,5 @@
 [![Gem Version](https://badge.fury.io/rb/smess.png)](http://badge.fury.io/rb/smess)
-[![Code Climate](https://codeclimate.com/repos/52249703f3ea003d03072821/badges/efe9fa39e239e1515d4e/gpa.png)](https://codeclimate.com/repos/52249703f3ea003d03072821/feed)
+[![Code Climate](https://codeclimate.com/github/eimermusic/smess.png)](https://codeclimate.com/github/eimermusic/smess)
 
 # Smess - A mess of SMS messaging
 
