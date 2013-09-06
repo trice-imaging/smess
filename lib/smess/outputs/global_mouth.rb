@@ -2,8 +2,7 @@ require 'uri'
 require 'httpi'
 
 module Smess
-  class GlobalMouth
-    include Smess::Logging
+  class GlobalMouth < HttpBase
 
     def deliver_sms(sms_arg)
       return false unless sms_arg.kind_of? Sms
@@ -26,28 +25,20 @@ module Smess
 
     private
 
-    attr_reader :sms
-
     def username
       ENV["SMESS_GLOBAL_MOUTH_USER"].dup # paranoid safeguard
     end
+
     def password
       ENV["SMESS_GLOBAL_MOUTH_PASS"]
     end
+
     def sender_id
       ENV["SMESS_GLOBAL_MOUTH_SENDER_ID"]
     end
 
     def url
       "https://mcm.globalmouth.com:8443/api/mcm"
-    end
-
-    def from
-      sms.originator || sender_id
-    end
-
-    def message_id
-      @message_id ||= Digest::MD5.hexdigest "#{Time.now.strftime('%Y%m%d%H%M%S')}#{sms.to}-#{SecureRandom.hex(6)}"
     end
 
     def params
@@ -73,23 +64,6 @@ module Smess
       )
     end
 
-    def request
-      @request ||= HTTPI::Request.new
-    end
-
-    def result_for_error(e)
-      code = e.code rescue "-1"
-      {
-        response_code: '-1',
-        response: {
-          temporaryError: 'true',
-          responseCode: e.code,
-          responseText: e.message
-        },
-        data: result_data
-      }
-    end
-
     def normal_result(response)
       response_code = response.body.split(/\n/).first
       response_code = "0" if response_code == "200"
@@ -100,14 +74,6 @@ module Smess
         response: {body: response.body},
         destination_address: sms.to,
         data: result_data
-      }
-    end
-
-    def result_data
-      {
-        to: sms.to,
-        text: sms.message.strip_nongsm_chars,
-        from: from
       }
     end
 

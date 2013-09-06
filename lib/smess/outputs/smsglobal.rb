@@ -2,8 +2,7 @@ require 'uri'
 require 'httpi'
 
 module Smess
-  class Smsglobal
-    include Smess::Logging
+  class Smsglobal < HttpBase
 
     def deliver_sms(sms_arg)
       return false unless sms_arg.kind_of? Sms
@@ -26,42 +25,29 @@ module Smess
 
     private
 
-    attr_reader :sms
+    def username
+      ENV["SMESS_SMSGLOBAL_USER"]
+    end
+    def password
+      ENV["SMESS_SMSGLOBAL_PASS"]
+    end
+    def sender_id
+      ENV["SMESS_SMSGLOBAL_SENDER_ID"]
+    end
 
     def url
       "https://www.smsglobal.com/http-api.php"
     end
 
-    def from
-      sms.originator || ENV["SMESS_SMSGLOBAL_SENDER_ID"]
-    end
-
     def params
       @params ||= {
         action: "sendsms",
-        user: ENV["SMESS_SMSGLOBAL_USER"],
-        password: ENV["SMESS_SMSGLOBAL_PASS"],
+        user: username,
+        password: password,
         from: from,
         to: sms.to,
         text: sms.message.strip_nongsm_chars,
         maxsplit: "3"
-      }
-    end
-
-    def request
-      @request ||= HTTPI::Request.new
-    end
-
-    def result_for_error(e)
-      code = e.code rescue "-1"
-      {
-        response_code: '-1',
-        response: {
-          temporaryError: 'true',
-          responseCode: e.code,
-          responseText: e.message
-        },
-        data: result_data
       }
     end
 
@@ -76,14 +62,6 @@ module Smess
         response: response.body,
         destination_address: sms.to,
         data: result_data
-      }
-    end
-
-    def result_data
-      {
-        to: sms.to,
-        text: sms.message.strip_nongsm_chars,
-        from: from
       }
     end
 

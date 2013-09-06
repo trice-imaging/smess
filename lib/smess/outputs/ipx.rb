@@ -173,12 +173,11 @@ module Smess
     end
 
     def result_for_error(e)
-      code = e.code rescue "-1"
       {
         response_code: '-1',
         response: {
           temporaryError: 'true',
-          responseCode: code,
+          responseCode: '-1',
           responseText: e.message
         },
         data: result_data
