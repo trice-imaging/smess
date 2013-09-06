@@ -14,8 +14,5 @@ module Smess
       }
     end
 
-    def fallback_to_twilio
-    end
-
   end
 end
