@@ -3,6 +3,7 @@ module Smess
     include Smess::Logging
 
     def initialize
+      @results = []
       @endpoint = account[:sms_url]
       @credentials = {
         name: account[:username],
@@ -26,20 +27,16 @@ module Smess
       @sms = sms_arg
 
       set_originator(sms.originator)
+      perform_operator_adaptation(sms.to)
 
-      perform_operator_adaptation sms.to
-
-      results = []
       parts.each_with_index do |part, i|
         return false if part.empty?
-        # if we have several parts, send them as concatenated sms using UDH codes
-        soap_body["userDataHeader"] = concatenation_udh(i+1, parts.length) if parts.length > 1
-        soap_body["userData"] = part
-        soap_body["correlationId"] = Time.now.strftime('%Y%m%d%H%M%S') + sms.to + (i+1).to_s
+
+        populate_soap_body(part, i)
         results << send_one_sms
 
         # halt and use fallback on error...
-        unless results.last[:response_code].to_s == "0"
+        if last_result_was_error
           logger.info "IPX_ERROR: #{results.last}"
           return fallback_to_twilio || results.first
         end
@@ -52,6 +49,7 @@ module Smess
     private
 
     attr_reader :sms
+    attr_accessor :results
 
     def soap_body
       @soap_body ||= {
@@ -147,6 +145,13 @@ module Smess
       @ref_id ||= Random.new.rand(255).to_s(16).rjust(2,"0")
     end
 
+    def populate_soap_body(part, i)
+      # if we have several parts, send them as concatenated sms using UDH codes
+      soap_body["userDataHeader"] = concatenation_udh(i+1, parts.length) if parts.length > 1
+      soap_body["userData"] = part
+      soap_body["correlationId"] = Time.now.strftime('%Y%m%d%H%M%S') + sms.to + (i+1).to_s
+    end
+
     def send_one_sms
       client = soap_client
       soap_body_var = soap_body
@@ -160,6 +165,10 @@ module Smess
         # LOG error here?
       end
       result
+    end
+
+    def last_result_was_error
+      results.last.fetch(:response_code, '').to_s != "0"
     end
 
     def parse_sms_response(response)
