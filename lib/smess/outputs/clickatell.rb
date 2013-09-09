@@ -31,83 +31,85 @@ module Smess
       ::Clickatell::API.secure_mode = true
     end
 
-    def split_sms(text)
-      return [text] unless text.sms_length > 160
-      logger.debug "message text is long"
+    def deliver_sms(sms_arg)
+      @sms = sms_arg
 
-      result = []
-      while text.sms_length > 160
-        logger.debug end_char = text.rindex(/[\n\r]/, 160)
-        part = text[0..end_char]
-        result << part
-        text = text[(end_char+1)..text.length]
+      begin
+        responses = []
+        messages.each do |msg|
+          rsp = api.send_message(sms.to, msg.encode('ISO-8859-1'), {from: from, concat: 3, callback: 7})
+          responses << rsp
+        end
+        result = normal_result(responses.first)
+      rescue Exception => e
+        # connection problem or some error
+        result = result_for_error(e)
       end
-      result << text
       result
     end
 
-    def sender_not_supported(sms)
+    private
+
+    attr_reader :sms
+
+    def from
+      return nil if sender_not_supported
+      ENV["SMESS_CLICKATELL_SENDER_IDS"].split(",").include?(sms.originator) ? sms.originator : ENV["SMESS_CLICKATELL_SENDER_ID"]
+    end
+
+    def messages
+      msg = sms.message.strip_nongsm_chars
+      concat_not_supported ? Smess.separate_sms(msg) : [msg]
+    end
+
+    # "feature detection"
+    # Clickatell's API requires knowledge of country-specific quirks and feature support.
+    # Supported features can and does change without notice, breaking some countries.
+    def sender_not_supported
       sms.to[0] == "1" || # USA
       sms.to[0..2] == "962" || # Jordan
       sms.to[0..2] == "971" # UAE
     end
-    def concat_not_supported(sms)
+    def concat_not_supported
       sms.to[0] == "1" # USA
     end
 
-
-
-    def deliver_sms(sms)
-      return false unless sms.kind_of? Sms
-      @sms = sms
-
-      api = ::Clickatell::API.authenticate(
+    def api
+      @api ||= ::Clickatell::API.authenticate(
         ENV["SMESS_CLICKATELL_API_ID"],
         ENV["SMESS_CLICKATELL_USER"],
         ENV["SMESS_CLICKATELL_PASS"]
       )
-      message = sms.message.strip_nongsm_chars.encode('ISO-8859-1')
-      from = ENV["SMESS_CLICKATELL_SENDER_IDS"].split(",").include?(sms.originator) ? sms.originator : ENV["SMESS_CLICKATELL_SENDER_ID"]
+    end
 
-      # Pretty pretty "feature detection"
-      if sender_not_supported sms
-        from = nil
-      end
-      if concat_not_supported sms
-        message_array = split_sms(message)
-      end
-
-      begin
-        if concat_not_supported sms
-          response = nil
-          message_array.each do |msg|
-            rsp = api.send_message(sms.to, msg, {:from => from, :concat => 3, :callback => 7})
-            response = rsp if response.nil?
-          end
-        else
-          response = api.send_message(sms.to, message, {:from => from, :concat => 3, :callback => 7})
-        end
-      rescue Exception => e
-        logger.warn response
-        # connection problem or some error
-        result = {
-          :response_code => '-1',
-          :response  => {
-            :temporaryError =>'true',
-            :responseCode => e.code,
-            :responseText => e.message
-          },
-          :data => {:to => sms.to, :text => sms.message.strip_nongsm_chars, :from => from}
-        }
-        return result
-      end
+    def normal_result(response)
       # Successful response
-      result = {
-        :message_id => response['ID'],
-        :response_code => '0',
-        :response => response,
-        :destination_address => sms.to,
-        :data => {:to => sms.to, :text => sms.message.strip_nongsm_chars, :from => from}
+      {
+        message_id: response['ID'],
+        response_code: '0',
+        response: response,
+        destination_address: sms.to,
+        data: result_data
+      }
+    end
+
+    def result_for_error(e)
+      {
+        response_code: '-1',
+        response: {
+          temporaryError: 'true',
+          responseCode: '-1',
+          responseText: e.message
+        },
+        data: result_data
+      }
+    end
+
+    def result_data
+      {
+        to: sms.to,
+        text: sms.message.strip_nongsm_chars,
+        from: from
       }
     end
 
