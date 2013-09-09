@@ -1,3 +1,4 @@
+# coding: UTF-8
 class String
   def to_underscore
     self.gsub(/::/, '/').

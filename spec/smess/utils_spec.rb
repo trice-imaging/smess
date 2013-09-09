@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding: UTF-8
 require 'spec_helper'
 
 describe "Smess Utils", iso_id: "7.4" do
