@@ -9,7 +9,6 @@ module Smess
       request.url = "#{url}?#{params.to_query}"
 
       begin
-        HTTPI.log_level = :debug
         response = HTTPI.get request
         result = normal_result(response)
       rescue Exception => e

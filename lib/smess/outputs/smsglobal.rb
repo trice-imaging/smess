@@ -9,7 +9,6 @@ module Smess
       request.body = params
 
       begin
-        HTTPI.log_level = :debug
         response = HTTPI.post request
         result = normal_result(response)
       rescue Exception => e

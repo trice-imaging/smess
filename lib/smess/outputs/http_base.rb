@@ -7,6 +7,7 @@ module Smess
 
     def initialize(sms)
       @sms = sms
+      HTTPI.log_level = :debug
     end
 
     private
