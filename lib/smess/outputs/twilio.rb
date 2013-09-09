@@ -4,7 +4,13 @@ module Smess
   class Twilio
     include Smess::Logging
 
-    def deliver_sms(sms)
+    attr_reader :sms
+
+    def initialize(sms)
+      @sms = sms
+    end
+
+    def deliver
       parts = Smess.separate_sms sms.message.strip_nongsm_chars
       return false if parts[0].empty?
 

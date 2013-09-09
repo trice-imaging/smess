@@ -39,7 +39,13 @@ The aggregator outputs are a very simple plugin system so you can subclass, modi
 module Smess
   class Example
 
-    def deliver_sms(sms)
+    attr_reader :sms
+
+    def initialize(sms)
+      @sms = sms
+    end
+
+    def deliver
       # Do work and return a hash like this one
       {
       :response_code => '-1',

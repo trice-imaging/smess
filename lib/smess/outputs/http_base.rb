@@ -5,6 +5,10 @@ module Smess
   class HttpBase
     include Smess::Logging
 
+    def initialize(sms)
+      @sms = sms
+    end
+
     private
 
     attr_reader :sms

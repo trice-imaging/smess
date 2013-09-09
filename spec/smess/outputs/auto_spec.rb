@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Smess::Auto, iso_id: "7.2.1" do
   describe '#get_output_name_for_msisdn' do
-    subject { Smess::Auto.new.get_output_name_for_msisdn(@msisdn) }
+    subject { Smess::Auto.new(Smess::Sms.new).get_output_name_for_msisdn(@msisdn) }
 
     it 'returns USA aggregator from the registry based on the single digit countrycode' do
       @msisdn = "12345677889"

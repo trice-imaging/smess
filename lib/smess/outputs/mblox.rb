@@ -5,7 +5,13 @@ module Smess
   class Mblox
     include Smess::Logging
 
-    def deliver_sms(sms)
+    attr_reader :sms
+
+    def initialize(sms)
+      @sms = sms
+    end
+
+    def deliver
       parts = Smess.split_sms(sms.message.strip_nongsm_chars)
       return false if parts[0].empty?
 

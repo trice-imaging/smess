@@ -26,14 +26,13 @@ module Smess
   class Clickatell
     include Smess::Logging
 
-    def initialize
+    def initialize(sms)
+      @sms = sms
       ::Clickatell::API.debug_mode = true
       ::Clickatell::API.secure_mode = true
     end
 
-    def deliver_sms(sms_arg)
-      @sms = sms_arg
-
+    def deliver
       begin
         responses = []
         messages.each do |msg|

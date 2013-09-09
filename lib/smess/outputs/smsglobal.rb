@@ -4,9 +4,7 @@ require 'httpi'
 module Smess
   class Smsglobal < HttpBase
 
-    def deliver_sms(sms_arg)
-      @sms = sms_arg
-
+    def deliver
       request.url = url
       request.body = params
 

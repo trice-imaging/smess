@@ -2,7 +2,8 @@ module Smess
   class Ipx
     include Smess::Logging
 
-    def initialize
+    def initialize(sms)
+      @sms = sms
       @results = []
       @endpoint = account[:sms_url]
       @credentials = {
@@ -22,9 +23,7 @@ module Smess
       }
     end
 
-    def deliver_sms(sms_arg)
-      @sms = sms_arg
-
+    def deliver
       set_originator(sms.originator)
       perform_operator_adaptation(sms.to)
 

@@ -2,7 +2,10 @@ module Smess
   class Etisalatdemo
     include Smess::Logging
 
-    def initialize
+    attr_reader :sms
+
+    def initialize(sms)
+      @sms = sms
       @smtp_settings = {
         address:              "exmail.emirates.net.ae",
         port:                 25,
@@ -14,15 +17,14 @@ module Smess
       }
     end
 
-    def deliver_sms(sms)
-      @sms = sms
-
+    def deliver
       local_from_var = from_address
+      local_sms = sms
       mail = Mail.new do
         from      local_from_var
-        to        "+#{sms.to}@email2sms.ae"
+        to        "+#{local_sms.to}@email2sms.ae"
         subject   "Smess Message"
-        body      sms.message.strip_nongsm_chars
+        body      local_sms.message.strip_nongsm_chars
       end
 
       mail.delivery_method :smtp, @smtp_settings

@@ -13,8 +13,8 @@ module Smess
 
     def deliver
       out_class = output
-      out = ("Smess::#{out_class.to_s.camelize}").constantize.new
-      results = out.deliver_sms self
+      out = ("Smess::#{out_class.to_s.camelize}").constantize.new(self)
+      results = out.deliver
     end
 
     def delivered?

@@ -4,9 +4,7 @@ require 'httpi'
 module Smess
   class GlobalMouth < HttpBase
 
-    def deliver_sms(sms_arg)
-      @sms = sms_arg
-
+    def deliver
       generate_mac_hash
       request.url = "#{url}?#{params.to_query}"
 

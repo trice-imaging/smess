@@ -13,7 +13,8 @@ module Smess
     class << self; attr_accessor :delivery_result end
     attr_reader :sms
 
-    def initialize
+    def initialize(sms)
+      @sms = sms
       @@instance = self
     end
 
@@ -21,8 +22,7 @@ module Smess
       @@instance
     end
 
-    def deliver_sms(sms)
-      @sms = sms
+    def deliver
       self.class.delivery_result
     end
 
