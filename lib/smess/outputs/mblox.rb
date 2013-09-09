@@ -6,8 +6,6 @@ module Smess
     include Smess::Logging
 
     def deliver_sms(sms)
-      return false unless sms.kind_of? Sms
-
       parts = Smess.split_sms(sms.message.strip_nongsm_chars)
       return false if parts[0].empty?
 

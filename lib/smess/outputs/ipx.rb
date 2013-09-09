@@ -23,15 +23,12 @@ module Smess
     end
 
     def deliver_sms(sms_arg)
-      return false unless sms_arg.kind_of? Sms
       @sms = sms_arg
 
       set_originator(sms.originator)
       perform_operator_adaptation(sms.to)
 
       parts.each_with_index do |part, i|
-        return false if part.empty?
-
         populate_soap_body(part, i)
         results << send_one_sms
 

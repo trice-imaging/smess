@@ -5,7 +5,6 @@ module Smess
   class GlobalMouth < HttpBase
 
     def deliver_sms(sms_arg)
-      return false unless sms_arg.kind_of? Sms
       @sms = sms_arg
 
       generate_mac_hash

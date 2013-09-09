@@ -11,7 +11,7 @@ module Smess
       }
     }
     class << self; attr_accessor :delivery_result end
-    attr_reader :sms, :mms
+    attr_reader :sms
 
     def initialize
       @@instance = self
@@ -22,7 +22,6 @@ module Smess
     end
 
     def deliver_sms(sms)
-      return false unless sms.kind_of? Sms
       @sms = sms
       self.class.delivery_result
     end

@@ -15,7 +15,6 @@ module Smess
     end
 
     def deliver_sms(sms)
-      return false unless sms.kind_of? Sms
       @sms = sms
 
       local_from_var = from_address

@@ -5,7 +5,6 @@ module Smess
   class Smsglobal < HttpBase
 
     def deliver_sms(sms_arg)
-      return false unless sms_arg.kind_of? Sms
       @sms = sms_arg
 
       request.url = url
@@ -16,7 +15,7 @@ module Smess
         response = HTTPI.post request
         result = normal_result(response)
       rescue Exception => e
-        puts logger.warn response
+        logger.warn response
         # connection problem or some error
         result = result_for_error(e)
       end
