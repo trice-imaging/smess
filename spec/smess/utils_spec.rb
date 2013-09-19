@@ -15,9 +15,8 @@ describe "Smess Utils", iso_id: "7.4" do
     '44701234567'.msisdn(46).should == '44701234567'
     '0049701234567'.msisdn(46).should == '49701234567'
     '(858) 123-4567'.msisdn(46).should == '8581234567'
-    '1234'.msisdn(46).should be_nil
-    'BEA790507'.msisdn(46).should be_nil
-    '{person:46701234567}'.msisdn(46).should be_nil
+    '1234'.msisdn(46).should == ''
+    'BEA790507'.msisdn(46).should == ''
   end
 
   it "cleans phone numbers forcing given country code" do
@@ -25,17 +24,21 @@ describe "Smess Utils", iso_id: "7.4" do
     '46701234567'.msisdn(46, true).should == '46701234567'
     '0049701234567'.msisdn(46, true).should == '49701234567'
     '(858) 123-4567'.msisdn(46, true).should == '468581234567'
-    '1234'.msisdn(46, true).should be_nil
-    'BEA790507'.msisdn(46, true).should be_nil
-    '{person:46701234567}'.msisdn(46, true).should be_nil
+    '1234'.msisdn(46, true).should == ''
+    'BEA790507'.msisdn(46, true).should == ''
   end
 
-  it "returns nil when given invalid msisdn to clean" do
-    'hello'.msisdn.should be_nil
+  it 'is idempotent when re-cleaning valid msisdn' do
+    '46701234567'.msisdn(46).msisdn(46).should == '46701234567'
+    '46701234567'.msisdn(46, true).msisdn(46).should == '46701234567'
   end
 
-  it "turns string empty when given invalid msisdn to clean in place" do
-    'hello'.msisdn!.should == ""
+  it "returns an empty string when cleaning invalid msisdn" do
+    'hello'.msisdn.should == ''
+  end
+
+  it "turns string empty when cleaning invalid msisdn in place" do
+    'hello'.msisdn!.should == ''
   end
 
   it "can count the length of an sms message in extended String class" do

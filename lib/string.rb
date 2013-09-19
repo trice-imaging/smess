@@ -88,36 +88,46 @@ class String
   def msisdn(*args)
     ret = self.dup
     ret.msisdn!(*args)
-    ret.empty? ? nil : ret
   end
   def msisdn!(country_code = 1, force_country_code = false)
-    self.replace("") and return self if /\{[a-z]+:.+\}/.match(self) # custom crap
-
-    # make num all digits
     self.gsub!(/\D/,"")
 
-    if length > 0 && self[0..1] == "00"
+    if begins_with_msisdn_international_prefix
       self.replace(self[2..-1])
-    elsif length > 0 && self[0] == "0"
-      # cut away leading zeros
+    elsif begins_with_msisdn_national_prefix
       self.replace(self[1..-1])
-      # Add country code unless the start of the number is the correct country code
-      unless self[0..country_code.to_s.length-1] == country_code.to_s
-        self.prepend(country_code.to_s)
-      end
+      ensure_msisdn_countrycode_prefix(country_code)
     elsif force_country_code
-      # Add country code unless the start of the number is the correct country code
-      unless self[0..country_code.to_s.length-1] == country_code.to_s
-        self.prepend(country_code.to_s)
-      end
+      ensure_msisdn_countrycode_prefix(country_code)
     end
 
-    # number must be in a valid range
-    unless (10..15) === self.length
-      self.replace("") and return self
-    end
-
+    validate_msisdn_length_range
     self
   end
+
+  private
+
+  def begins_with_msisdn_international_prefix
+    length > 0 && self[0..1] == "00"
+  end
+
+  # correct most places in the world but notably not in north america (1... countries)
+  def begins_with_msisdn_national_prefix
+    length > 0 && self[0] == "0"
+  end
+
+  # Add country code unless the start of the number is the correct country code
+  def ensure_msisdn_countrycode_prefix(country_code)
+    unless self[0..country_code.to_s.length-1] == country_code.to_s
+      self.prepend(country_code.to_s)
+    end
+  end
+
+  def validate_msisdn_length_range
+    unless (10..15) === self.length
+      self.replace("")
+    end
+  end
+
 
 end
