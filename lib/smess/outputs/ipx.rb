@@ -36,16 +36,24 @@ module Smess
     attr_reader :sms
     attr_accessor :results
 
+    def account_key_prefix
+      "IPX"
+    end
+
+    def account_key_for(key_part)
+      "SMESS_#{account_key_prefix}_#{key_part}"
+    end
+
     def account
       @account ||= {
-        sms_url: 'http://europe.ipx.com/api/services2/SmsApi52?wsdl',
-        shortcode: ENV["SMESS_IPX_SHORTCODE"],
-        username: ENV["SMESS_IPX_USER"],
-        password: ENV["SMESS_IPX_PASS"],
-        account_name: ENV["SMESS_IPX_ACCOUNT_NAME"],
+        sms_url: ENV[ account_key_for("URL") ],
+        shortcode: ENV[ account_key_for("SHORTCODE") ],
+        username: ENV[ account_key_for("USER") ],
+        password: ENV[ account_key_for("PASS") ],
+        account_name: ENV[ account_key_for("ACCOUNT_NAME") ],
         service_name: ENV["SMESS_SERVICE_NAME"],
-        service_meta_data_t_mobile_us: ENV["SMESS_IPX_SERVICE_META_DATA_T_MOBILE_US"],
-        service_meta_data_verizon: ENV["SMESS_IPX_SERVICE_META_DATA_VERIZON"]
+        service_meta_data_t_mobile_us: ENV[ account_key_for("SERVICE_META_DATA_T_MOBILE_US") ] ,
+        service_meta_data_verizon: ENV[ account_key_for("SERVICE_META_DATA_VERIZON") ]
       }
     end
 
