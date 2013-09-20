@@ -9,23 +9,8 @@ class String
   end
 
 
-  def valid_utf8?
-    !!unpack("U") rescue false
-  end
-
-  def utf8_safe_split(n)
-    if length <= n
-      [self, nil]
-    else
-      before = self[0, n]
-      after = self[n..-1]
-      until after.valid_utf8?
-        n = n - 1
-        before = self[0, n]
-        after = self[n..-1]
-      end
-      [before, after.empty? ? nil : after]
-    end
+  def split_at(index)
+      [ self[0, index], self[index..-1] || "" ]
   end
 
   # like strlen but with SMS alphabet calculations

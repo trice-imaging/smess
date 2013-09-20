@@ -46,30 +46,58 @@ describe "Smess Utils", iso_id: "7.4" do
     string.sms_length.should == 81
   end
 
-  it "can take a 160 char sms message" do
-    string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa ääää €aaa'
-    arr = Smess.split_sms(string)
-    arr.length.should == 1
-    arr[0].sms_length.should == 160
+  describe "#split_sms" do
+    it "can take a 160 char sms message" do
+      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa ääää €aaa'
+      arr = Smess.split_sms(string)
+      arr.length.should == 1
+      arr[0].sms_length.should == 160
+    end
+
+    it "can split an sms message into concat parts" do
+      # long message that is actually being split
+      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa ä€ää 28/1. pris 339/mån. Provträna gratis hela vecka 48 på nya Nautilus Regeringsgatan 59. Mer info på nautilusgym.se. Välkommen till oss. Nautilus Hammarby Sjöstad'
+      arr = Smess.split_sms(string)
+      arr.length.should == 3
+      arr[0].sms_length.should == 153
+      arr[1].sms_length.should == 152
+      arr[2].sms_length.should == 10
+    end
+
+    it "can split with any character at the split point" do
+      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa a€€ä aaaa aaaa'
+      arr = Smess.split_sms(string)
+      arr.length.should == 2
+      arr[0].sms_length.should == 153
+      arr[1].sms_length.should == 13
+    end
+
+    it "can split with more character at the split point" do
+      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa äbbä aaaa aaaa'
+      arr = Smess.split_sms(string)
+      arr.length.should == 2
+      arr[0].sms_length.should == 152
+      arr[1].sms_length.should == 12
+    end
+
   end
 
-  it "can split an sms message into concat parts" do
-    # long message that is actually being split
-    string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa ä€ää 28/1. pris 339/mån. Provträna gratis hela vecka 48 på nya Nautilus Regeringsgatan 59. Mer info på nautilusgym.se. Välkommen till oss. Nautilus Hammarby Sjöstad'
-    arr = Smess.split_sms(string)
-    arr.length.should == 3
-    arr[0].sms_length.should == 153
-    arr[1].sms_length.should == 152
-    arr[2].sms_length.should == 10
-  end
+  describe "#separate_sms" do
+    it "can take a 160 char sms message" do
+      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa ääää €aaa'
+      arr = Smess.separate_sms(string)
+      arr.length.should == 1
+      arr[0].sms_length.should == 160
+    end
 
-  it "separates a string into separate words to allow sending multiple non-concat messages" do
-    string = 'aaaaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa last next bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb last next cccc cccc'
-    arr = Smess.separate_sms(string)
-    arr.length.should == 3
-    arr[0].sms_length.should == 156
-    arr[1].sms_length.should == 159
-    arr[2].sms_length.should == 14
+    it "separates a string into separate words to allow sending multiple non-concat messages" do
+      string = 'aaaaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa last next bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb last next cccc cccc'
+      arr = Smess.separate_sms(string)
+      arr.length.should == 3
+      arr[0].sms_length.should == 156
+      arr[1].sms_length.should == 159
+      arr[2].sms_length.should == 14
+    end
   end
 
   it 'does not strip gsm characters' do
