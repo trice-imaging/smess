@@ -1,19 +1,6 @@
 module Smess
   class Ipxus < Ipx
 
-    def account
-      @account ||= {
-        sms_url: 'http://europe.ipx.com/api/services2/SmsApi52?wsdl',
-        shortcode: ENV["SMESS_IPX_SHORTCODE"],
-        username: ENV["SMESS_IPX_USER"],
-        password: ENV["SMESS_IPX_PASS"],
-        account_name: ENV["SMESS_IPX_ACCOUNT_NAME"],
-        service_name: ENV["SMESS_SERVICE_NAME"],
-        service_meta_data_t_mobile_us: ENV["SMESS_IPX_SERVICE_META_DATA_T_MOBILE_US"],
-        service_meta_data_verizon: ENV["SMESS_IPX_SERVICE_META_DATA_VERIZON"]
-      }
-    end
-
   private
 
     def set_originator(originator)

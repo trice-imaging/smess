@@ -1,6 +1,8 @@
 module Smess
   class Iconectiv < Ipxus
 
+    private
+
     def account
       @account ||= {
         sms_url: 'http://66.70.32.42:32005/api/services2/SmsApi52?wsdl',
