@@ -60,4 +60,5 @@ HTTPI.adapter = :net_http
 
 # Setting config defaults
 # there is probably a better way and better place
+# Unused and deprecated
 Smess.config.debug = Smess.booleanize(ENV["SMESS_DEBUG"])
