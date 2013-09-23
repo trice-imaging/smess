@@ -32,7 +32,7 @@ module Smess
     end
 
     def split_parts
-      Smess.split_sms(sms.message.strip_nongsm_chars).reject {|s| s.empty? }
+      Smess.separate_sms(sms.message.strip_nongsm_chars).reject {|s| s.empty? }
     end
 
     def client

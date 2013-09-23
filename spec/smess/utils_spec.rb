@@ -59,25 +59,34 @@ describe "Smess Utils", iso_id: "7.4" do
       string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa ä€ää 28/1. pris 339/mån. Provträna gratis hela vecka 48 på nya Nautilus Regeringsgatan 59. Mer info på nautilusgym.se. Välkommen till oss. Nautilus Hammarby Sjöstad'
       arr = Smess.split_sms(string)
       arr.length.should == 3
-      arr[0].sms_length.should == 153
-      arr[1].sms_length.should == 152
-      arr[2].sms_length.should == 10
+      arr[0].sms_length.should == 154
+      arr[1].sms_length.should == 154
+      arr[2].sms_length.should == 7
     end
 
     it "can split with any character at the split point" do
-      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa a€€ä aaaa aaaa'
+      string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa a€€€ä aaaa aaaa'
       arr = Smess.split_sms(string)
       arr.length.should == 2
       arr[0].sms_length.should == 153
-      arr[1].sms_length.should == 13
+      arr[1].sms_length.should == 15
     end
 
-    it "can split with more character at the split point" do
+    it "can split with any character at the split point, a variation" do
       string = 'ääää aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa äbbä aaaa aaaa'
       arr = Smess.split_sms(string)
       arr.length.should == 2
-      arr[0].sms_length.should == 152
-      arr[1].sms_length.should == 12
+      arr[0].sms_length.should == 154
+      arr[1].sms_length.should == 10
+    end
+
+    it "can split to the correct length according to the gsm alphabet" do
+      # € and a few other characters are 2-byte characters
+      string = 'ääää €€€€ €€€€ €€€€ €€€€ aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa äbbä aaaa aaaa'
+      arr = Smess.split_sms(string)
+      arr.length.should == 2
+      arr[0].sms_length.should == 154
+      arr[1].sms_length.should == 26
     end
 
   end
@@ -90,11 +99,21 @@ describe "Smess Utils", iso_id: "7.4" do
       arr[0].sms_length.should == 160
     end
 
-    it "separates a string into separate words to allow sending multiple non-concat messages" do
-      string = 'aaaaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa last next bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb last next cccc cccc'
+    it "separates a string on whitespace to allow sending multiple non-concat messages" do
+      string = "aaaaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa last\tnext bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb last next cccc cccc"
       arr = Smess.separate_sms(string)
       arr.length.should == 3
       arr[0].sms_length.should == 156
+      arr[1].sms_length.should == 159
+      arr[2].sms_length.should == 14
+    end
+
+    it "calculates the separation point respecting the GSM alphabet" do
+      # € and a few other characters are 2-byte characters
+      string = 'aaaaaa €€€€ €€€€ aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa last next bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb bbbb last next cccc cccc'
+      arr = Smess.separate_sms(string)
+      arr.length.should == 3
+      arr[0].sms_length.should == 159
       arr[1].sms_length.should == 159
       arr[2].sms_length.should == 14
     end
