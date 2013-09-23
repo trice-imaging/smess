@@ -5,10 +5,10 @@ module Smess
     def initialize(sms)
       @sms = sms
       @results = []
-      @endpoint = account[:sms_url]
+      @endpoint = sms_url
       @credentials = {
-        name: account[:username],
-        pass: account[:password]
+        name: username,
+        pass: password
       }
     end
 
@@ -44,23 +44,42 @@ module Smess
       "SMESS_#{account_key_prefix}_#{key_part}"
     end
 
-    def account
-      @account ||= {
-        sms_url: ENV[ account_key_for("URL") ],
-        shortcode: ENV[ account_key_for("SHORTCODE") ],
-        username: ENV[ account_key_for("USER") ],
-        password: ENV[ account_key_for("PASS") ],
-        account_name: ENV[ account_key_for("ACCOUNT_NAME") ],
-        service_name: ENV["SMESS_SERVICE_NAME"],
-        service_meta_data_t_mobile_us: ENV[ account_key_for("SERVICE_META_DATA_T_MOBILE_US") ] ,
-        service_meta_data_verizon: ENV[ account_key_for("SERVICE_META_DATA_VERIZON") ]
-      }
+    def sms_url
+      ENV[ account_key_for("URL") ]
+    end
+
+    def shortcode
+      ENV[ account_key_for("SHORTCODE") ]
+    end
+
+    def username
+      ENV[ account_key_for("USER") ]
+    end
+
+    def password
+      ENV[ account_key_for("PASS") ]
+    end
+
+    def account_name
+      ENV[ account_key_for("ACCOUNT_NAME") ]
+    end
+
+    def service_name
+      ENV["SMESS_SERVICE_NAME"]
+    end
+
+    def service_meta_data_t_mobile_us
+      ENV[ account_key_for("SERVICE_META_DATA_T_MOBILE_US") ]
+    end
+
+    def service_meta_data_verizon
+      ENV[ account_key_for("SERVICE_META_DATA_VERIZON") ]
     end
 
     def soap_body
       @soap_body ||= {
         "correlationId" => Time.now.strftime('%Y%m%d%H%M%S') + sms.to,
-        "originatingAddress" => account[:shortcode],
+        "originatingAddress" => shortcode,
         "originatorTON" => "0",
         "destinationAddress" => sms.to,
         "userData" => "",
@@ -70,16 +89,16 @@ module Smess
         "relativeValidityTime" => "-1",
         "deliveryTime" => "#NULL#",
         "statusReportFlags" => "1", # 1
-        "accountName" => account[:account_name],
+        "accountName" => account_name,
         "tariffClass" => "USD0", # needs to be extracted and variable per country
         "VAT" => "-1",
         "referenceId" => "#NULL#",
-        "serviceName" => account[:service_name],
+        "serviceName" =>  service_name,
         "serviceCategory" => "#NULL#",
         "serviceMetaData" => "#NULL#",
         "campaignName" => "#NULL#",
-        "username" => account[:username],
-        "password" => account[:password]
+        "username" => username,
+        "password" => password
       }
     end
 

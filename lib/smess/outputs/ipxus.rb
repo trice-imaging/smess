@@ -28,8 +28,8 @@ module Smess
         "correlationId" => Time.now.strftime('%Y%m%d%H%M%S') + msisdn,
         "consumerId" => msisdn,
         "campaignName" => "#NULL#",
-        "username" => account[:username],
-        "password" => account[:password]
+        "username" => username,
+        "password" => password
       }
 
       begin
@@ -58,11 +58,11 @@ module Smess
 
 
     def adapt_for_verizon(msisdn)
-      soap_body["serviceMetaData"] = account[:service_meta_data_verizon]
+      soap_body["serviceMetaData"] = service_meta_data_verizon
     end
 
     def adapt_for_t_mobile_us(msisdn)
-      soap_body["serviceMetaData"] = account[:service_meta_data_t_mobile_us]
+      soap_body["serviceMetaData"] = service_meta_data_t_mobile_us
     end
 
   end
