@@ -8,15 +8,7 @@ module Smess
       request.url = url
       request.body = params
 
-      begin
-        response = HTTPI.post request
-        result = normal_result(response)
-      rescue Exception => e
-        logger.warn response
-        # connection problem or some error
-        result = result_for_error(e)
-      end
-      result
+      http_post request
     end
 
     private

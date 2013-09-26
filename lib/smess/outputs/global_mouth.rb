@@ -7,16 +7,7 @@ module Smess
     def deliver
       generate_mac_hash
       request.url = "#{url}?#{params.to_query}"
-
-      begin
-        response = HTTPI.get request
-        result = normal_result(response)
-      rescue Exception => e
-        logger.warn response
-        # connection problem or some error
-        result = result_for_error(e)
-      end
-      result
+      http_get request
     end
 
     private

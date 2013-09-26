@@ -30,6 +30,22 @@ module Smess
       @request ||= HTTPI::Request.new
     end
 
+    def http_get(request)
+      http_request(:get, request)
+    end
+
+    def http_post(request)
+      http_request(:post, request)
+    end
+
+    def http_request(method, request)
+      response = HTTPI.send(method, request)
+      normal_result(response)
+    rescue Exception => e
+      logger.warn response
+      result_for_error(e)
+    end
+
     def result_for_error(e)
       {
         response_code: '-1',
