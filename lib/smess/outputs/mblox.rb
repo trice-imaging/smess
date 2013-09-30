@@ -90,7 +90,7 @@ module Smess
         HTTPI.log_level = :debug
         response = HTTPI.post request
         result = normal_result(response)
-      rescue Exception => e
+      rescue => e
         logger.warn response
         # connection problem or some error
         result = result_for_error(e)

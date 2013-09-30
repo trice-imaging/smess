@@ -31,7 +31,7 @@ module Smess
 
       begin
         mail.deliver
-      rescue Exception => e
+      rescue => e
         result = {
           response_code: "-1",
           response: {text: "Email2sms: Delivery Error: #{e.inspect}"},

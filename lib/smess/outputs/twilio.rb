@@ -48,7 +48,7 @@ module Smess
           status_callback: ENV["SMESS_TWILIO_CALLBACK_URL"]
         })
         result = normal_result(response)
-      rescue Exception => e
+      rescue => e
         result = result_for_error(e)
       end
       result

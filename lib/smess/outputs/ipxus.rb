@@ -37,7 +37,7 @@ module Smess
           soap.body = body
         end
         result = parse_operator_response(response)
-      rescue Exception => e
+      rescue => e
         result = result_for_error(e)
       ensure
         @endpoint = orig_endpoint

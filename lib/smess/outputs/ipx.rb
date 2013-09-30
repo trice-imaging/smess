@@ -185,7 +185,7 @@ module Smess
           soap.body = soap_body_var
         end
         result = parse_sms_response(response)
-      rescue Exception => e
+      rescue => e
         result = result_for_error(e)
         # LOG error here?
       end

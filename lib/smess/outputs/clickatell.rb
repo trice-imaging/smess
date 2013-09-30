@@ -40,7 +40,7 @@ module Smess
           responses << rsp
         end
         result = normal_result(responses.first)
-      rescue Exception => e
+      rescue => e
         # connection problem or some error
         result = result_for_error(e)
       end
