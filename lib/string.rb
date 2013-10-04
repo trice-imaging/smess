@@ -1,6 +1,6 @@
 # coding: UTF-8
 class String
-  def to_underscore
+  def smess_to_underscore
     self.gsub(/::/, '/').
     gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
     gsub(/([a-z\d])([A-Z])/,'\1_\2').

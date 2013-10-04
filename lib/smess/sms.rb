@@ -18,7 +18,7 @@ module Smess
     end
 
     def delivered?
-      @results[:response_code] == "0" rescue false
+      results[:response_code] == "0"
     end
 
   end

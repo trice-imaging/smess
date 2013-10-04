@@ -12,7 +12,7 @@ module Smess
     def perform_operator_adaptation(msisdn)
       operator_data = lookup_operator msisdn
       unless operator_data[:operator].nil?
-        method_name = "adapt_for_#{operator_data[:operator].to_underscore.gsub(" ","_")}"
+        method_name = "adapt_for_#{operator_data[:operator].smess_to_underscore.gsub(" ","_")}"
         send(method_name, msisdn) if respond_to?(:"#{method_name}", true)
       end
     end
