@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.add_development_dependency 'rspec', '>= 2.4.0'
+  s.add_development_dependency 'simplecov'
   s.add_development_dependency 'jahtml_formatter'
   s.add_development_dependency 'dotenv'
   s.add_dependency 'mail'

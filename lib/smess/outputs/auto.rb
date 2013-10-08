@@ -14,7 +14,7 @@ module Smess
 
     def output_for(msisdn)
       out_class = get_output_name_for_msisdn msisdn
-      ("Smess::#{out_class.to_s.camelize}").constantize.new(sms)
+      "Smess::#{out_class.to_s.camelize}".constantize.new(sms)
     end
 
     def deliver

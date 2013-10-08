@@ -6,6 +6,10 @@ require 'fileutils'
 require 'dotenv'
 Dotenv.load ".env.test", '.env'
 
+require 'simplecov'
+SimpleCov.start do
+end
+
 smess_path = File.expand_path('../lib', File.dirname(__FILE__))
 $:.unshift(smess_path) if File.directory?(smess_path) && !$:.include?(smess_path)
 
