@@ -15,6 +15,7 @@ require 'smess/outputs/http_base'
 require 'smess/outputs/auto'
 require 'smess/outputs/ipx'
 require 'smess/outputs/ipxus'
+require 'smess/outputs/card_board_fish'
 require 'smess/outputs/clickatell'
 require 'smess/outputs/etisalatdemo'
 require 'smess/outputs/smsglobal'
@@ -29,8 +30,8 @@ require 'string'
 module Smess
 
   # Move to config?
-  OUTPUTS = %w{auto clickatell etisalatdemo global_mouth iconectiv mblox ipxus smsglobal twilio}
-  COUNTRY_CODES = [1, 20, 34, 46, 49, 966, 971]
+  OUTPUTS = %w{auto card_board_fish clickatell etisalatdemo global_mouth iconectiv mblox ipxus smsglobal twilio}
+  COUNTRY_CODES = [1, 20, 212, 34, 46, 49, 966, 971]
 
   def self.new(*args)
     Sms.new(*args)

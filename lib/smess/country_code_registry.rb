@@ -24,6 +24,7 @@ module Smess
     "1869"=> :global_mouth,
     "1876"=> :global_mouth,
     "20"  => :global_mouth,
+    "212" => :card_board_fish,
     "34"  => :global_mouth,
     "46"  => :global_mouth,
     "49"  => :global_mouth,
