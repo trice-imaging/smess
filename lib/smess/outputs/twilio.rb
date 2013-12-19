@@ -35,13 +35,9 @@ module Smess
       Smess.separate_sms(sms.message.strip_nongsm_chars).reject {|s| s.empty? }
     end
 
-    def client
-      @client ||= ::Twilio::REST::Client.new(ENV["SMESS_TWILIO_SID"], ENV["SMESS_TWILIO_AUTH_TOKEN"])
-    end
-
     def send_one_sms(message)
       begin
-        response = client.account.sms.messages.create({
+        response = create_client_message({
           from: from,
           to: "+#{sms.to}",
           body: message,
@@ -52,6 +48,14 @@ module Smess
         result = result_for_error(e)
       end
       result
+    end
+
+    def create_client_message(params)
+      client.account.sms.messages.create(params)
+    end
+
+    def client
+      @client ||= ::Twilio::REST::Client.new(ENV["SMESS_TWILIO_SID"], ENV["SMESS_TWILIO_AUTH_TOKEN"])
     end
 
     def normal_result(response)
