@@ -25,6 +25,7 @@ module Smess
     "1876"=> :global_mouth,     # Jamaica
     "20"  => :global_mouth,     # Egypt
     "212" => :card_board_fish,  # Morocco
+    "33"  => :global_mouth,     # France
     "34"  => :global_mouth,     # Spain
     "46"  => :global_mouth,     # Sweden
     "49"  => :global_mouth,     # Germany
