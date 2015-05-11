@@ -31,7 +31,7 @@ module Smess
 
   # Move to config?
   OUTPUTS = %w{auto card_board_fish clickatell etisalatdemo global_mouth iconectiv mblox ipxus smsglobal twilio}
-  COUNTRY_CODES = [1, 20, 212, 33, 34, 46, 49, 966, 971]
+  COUNTRY_CODES = [1, 20, 212, 33, 34, 44, 46, 49, 966, 971]
 
   def self.new(*args)
     Sms.new(*args)

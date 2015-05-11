@@ -27,6 +27,7 @@ module Smess
     "212" => :card_board_fish,  # Morocco
     "33"  => :global_mouth,     # France
     "34"  => :global_mouth,     # Spain
+    "44"  => :global_mouth,     # Great Britain
     "46"  => :global_mouth,     # Sweden
     "49"  => :global_mouth,     # Germany
     "966" => :global_mouth,     # Saudi Arabia
