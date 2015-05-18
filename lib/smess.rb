@@ -4,6 +4,7 @@ $:.unshift(smess_path) if File.directory?(smess_path) && !$:.include?(smess_path
 
 require 'mail'
 require 'savon'
+require 'active_support'
 require 'active_support/core_ext'
 
 require "smess/version"
