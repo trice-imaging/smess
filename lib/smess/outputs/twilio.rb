@@ -51,7 +51,7 @@ module Smess
     end
 
     def create_client_message(params)
-      client.account.sms.messages.create(params)
+      client.account.messages.create(params)
     end
 
     def client
