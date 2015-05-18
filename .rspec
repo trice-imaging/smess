@@ -1,1 +1,1 @@
---colour -f d --format JahtmlFormatter --out spec_output.html
+--colour -f d

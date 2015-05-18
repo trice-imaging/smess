@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '>= 2.4.0'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'jahtml_formatter'
   s.add_development_dependency 'dotenv'
   s.add_dependency 'mail'
   s.add_dependency 'savon', '1.2.0'
