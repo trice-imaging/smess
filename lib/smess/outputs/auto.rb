@@ -7,9 +7,9 @@ module Smess
 
     def get_output_name_for_msisdn(msisdn)
       3.downto(0).each do |index|
-        return OUTPUT_BY_COUNTRY_CODE[msisdn[0..index]] if OUTPUT_BY_COUNTRY_CODE.key? msisdn[0..index]
+        return Smess.config.output_by_country_code[msisdn[0..index]] if Smess.config.output_by_country_code.key? msisdn[0..index]
       end
-      OUTPUT_BY_COUNTRY_CODE["0"]
+      Smess.config.default_output
     end
 
     def output_for(msisdn)
