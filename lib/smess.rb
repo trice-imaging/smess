@@ -32,10 +32,6 @@ module Smess
     attr_writer :config
   end
 
-  # Move to config?
-  OUTPUTS = %w{auto card_board_fish clickatell etisalatdemo global_mouth iconectiv mblox smsglobal twilio}
-  COUNTRY_CODES = [1, 20, 212, 33, 34, 44, 46, 49, 594, 966, 971]
-
   def self.new(*args)
     Sms.new(*args)
   end
@@ -53,12 +49,13 @@ module Smess
   end
 
   class Config
-    attr_accessor :debug, :default_output, :country_codes, :output_by_country_code
+    attr_accessor :debug, :default_output, :country_codes, :outputs, :output_by_country_code
 
     def initialize
       @debug = false
       @default_output = :global_mouth
       @country_codes = [1, 20, 212, 33, 34, 44, 46, 49, 594, 966, 971]
+      @outputs = %w{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
       @output_by_country_code = {
         "1"   => :iconectiv,        # USA
         "1242"=> :global_mouth,     # Bahamas
@@ -91,8 +88,15 @@ module Smess
         "49"  => :global_mouth,     # Germany
         "594" => :global_mouth,     # French Guiana
         "966" => :global_mouth,     # Saudi Arabia
-        "971" => :etisalatdemo      # United Arab Emirates
+        "971" => :twilio            # United Arab Emirates
       }
+    end
+
+    def add_country_code(cc, output=default_output)
+      raise ArgumentError.new("Invalid country code") unless cc.to_i.to_s == cc.to_s
+      raise ArgumentError.new("Unknown output specified") unless outputs.include? output.to_s
+      output_by_country_code[cc.to_s] = output.to_sym
+      true
     end
 
   end
