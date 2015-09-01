@@ -49,10 +49,10 @@ module Smess
   end
 
   class Config
-    attr_accessor :debug, :default_output, :country_codes, :outputs, :output_by_country_code
+    attr_accessor :nothing, :default_output, :country_codes, :outputs, :output_by_country_code
 
     def initialize
-      @debug = false
+      @nothing = false
       @default_output = :global_mouth
       @country_codes = [1, 20, 212, 33, 34, 44, 46, 49, 594, 966, 971]
       @outputs = %w{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
