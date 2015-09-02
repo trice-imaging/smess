@@ -24,12 +24,9 @@ require 'smess/outputs/twilio'
 require 'smess/outputs/iconectiv'
 require 'smess/outputs/test'
 
-require 'string'
+require 'string_ext'
 
 module Smess
-  class << self
-    attr_writer :config
-  end
 
   def self.new(*args)
     Sms.new(*args)
@@ -104,3 +101,4 @@ end
 
 # httpclient does not send basic auth correctly, or at all.
 HTTPI.adapter = :net_http
+Smess.config.nothing = true
