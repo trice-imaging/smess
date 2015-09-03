@@ -10,12 +10,7 @@ module Smess
     end
 
     def deliver
-      parts.each do |part|
-        results << send_one_sms(part)
-      end
-
-      # we don't actually return the status for any of additional messages which is cheating
-      results.first
+      send_one_sms sms.message.strip_nongsm_chars
     end
 
     private
