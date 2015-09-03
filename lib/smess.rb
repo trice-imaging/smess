@@ -45,13 +45,15 @@ module Smess
   end
 
   class Config
-    attr_accessor :nothing, :default_output, :country_codes, :outputs, :output_by_country_code
+    attr_accessor :nothing, :default_output, :country_codes, :output_types, :outputs, :output_configs, :output_by_country_code
 
     def initialize
       @nothing = false
       @default_output = :global_mouth
       @country_codes = [1, 20, 212, 33, 34, 44, 46, 49, 594, 966, 971]
-      @outputs = %w{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
+      @output_types = %i{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
+      @outputs = []
+      @output_configs = {}
       @output_by_country_code = {
         "1"   => :iconectiv,        # USA
         "1242"=> :global_mouth,     # Bahamas
@@ -90,9 +92,22 @@ module Smess
 
     def add_country_code(cc, output=default_output)
       raise ArgumentError.new("Invalid country code") unless cc.to_i.to_s == cc.to_s
-      raise ArgumentError.new("Unknown output specified") unless outputs.include? output.to_s
+      raise ArgumentError.new("Unknown output specified") unless outputs.include? output.to_sym
       output_by_country_code[cc.to_s] = output.to_sym
       true
+    end
+
+    def register_output(name, country_codes, type, config)
+      name = name.to_sym
+      type = type.to_sym
+      raise ArgumentError.new("Duplicate output name") if outputs.include? name
+      raise ArgumentError.new("Unknown output type specified") unless output_types.include? type
+
+      outputs << name
+      output_configs[name] = {type: type, config: config}
+      country_codes.each do |cc|
+        add_country_code(cc, name)
+      end
     end
 
   end
@@ -101,4 +116,3 @@ end
 
 # httpclient does not send basic auth correctly, or at all.
 HTTPI.adapter = :net_http
-Smess.config.nothing = true
