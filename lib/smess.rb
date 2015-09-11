@@ -52,11 +52,12 @@ module Smess
   end
 
   class Config
-    attr_accessor :nothing, :default_output, :country_codes, :output_types, :configured_outputs, :output_by_country_code
+    attr_accessor :nothing, :default_output, :default_sender_id, :default_sender_id, :country_codes, :output_types, :configured_outputs, :output_by_country_code
 
     def initialize
       @nothing = false
       @default_output = :global_mouth
+      @default_sender_id = "Smess"
       @country_codes = [1, 20, 212, 33, 34, 44, 46, 49, 594, 966, 971]
       @output_types = %i{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
       @configured_outputs = {test: {type: :test, config: nil}}

@@ -10,13 +10,14 @@ module Smess
       HTTPI.log_level = :debug
     end
 
+
+    def sender_id
+      @sender_id || Smess.config.default_sender_id
+    end
+
     private
 
     attr_reader :sms
-
-    def sender_id
-      ENV["SMESS_SENDER_ID"]
-    end
 
     def from
       sms.originator || sender_id

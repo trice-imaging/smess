@@ -9,6 +9,7 @@ module Smess
       @results = []
     end
 
+    attr_accessor :sid, :auth_token, :from, :callback_url
     def validate_config
       @sid = config.fetch(:sid)
       @auth_token = config.fetch(:auth_token)
@@ -22,7 +23,6 @@ module Smess
 
     private
 
-    attr_accessor :sid, :auth_token, :from, :callback_url
     attr_accessor :results
 
     def parts

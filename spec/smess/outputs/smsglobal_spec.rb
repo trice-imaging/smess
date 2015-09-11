@@ -22,13 +22,18 @@ describe Smess::Smsglobal, iso_id: "7.2.4" do
 
   subject {
     output = described_class.new({
-      username: "",
-      password: "",
-      sender_id: ""
+      username: "RspecUser",
+      password: "RspecPass",
+      sender_id: "RspecId"
     })
     output.sms = sms
     output
   }
+
+  it 'sender_id overrides base class' do
+    expect(subject.sender_id).to eq("RspecId")
+    expect(described_class.new({username: "RspecUser", password: "RspecPass"}).sender_id).to eq("Smess")
+  end
 
   it 'calls the correct http endpoint' do
     request = nil

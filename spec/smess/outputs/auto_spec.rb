@@ -37,6 +37,53 @@ describe Smess::Auto, iso_id: "7.2.1" do
   end
 
   describe '#output_for' do
+
+    before(:each) do
+      Smess.reset_config
+      Smess.configure do |config|
+
+        config.register_output({
+          name: :iconectiv,
+          country_codes: ["1"],
+          type: :iconectiv,
+          config: {
+            sms_url:                       "",
+            username:                      "",
+            password:                      "",
+            shortcode:                     "",
+            account_name:                  "",
+            service_name:                  "",
+            service_meta_data_verizon:     "",
+            service_meta_data_t_mobile_us: ""
+          }
+        })
+
+        config.register_output({
+          name: :global_mouth,
+          country_codes: ["46"],
+          type: :global_mouth,
+          config: {
+            username:  "",
+            password:  "",
+            sender_id: ""
+          }
+        })
+
+        config.register_output({
+          name: :twilio,
+          country_codes: ["971", "46"],
+          type: :twilio,
+          config: {
+            sid:          "",
+            auth_token:   "",
+            from:         "",
+            callback_url: ""
+          }
+        })
+
+      end
+    end
+
     subject { Smess::Auto.new(Smess::Sms.new).output_for(@msisdn) }
 
     it 'returns USA aggregator from the registry based on the single digit countrycode' do
@@ -79,11 +126,17 @@ describe Smess::Auto, iso_id: "7.2.1" do
 
   describe '#deliver' do
     let(:sms){ Smess::Sms.new(to:"12345677889") }
-    subject { Smess::Auto.new(sms) }
+    subject {
+      output = Smess::Auto.new({})
+      output.sms = sms
+      output
+    }
 
     it 'asks for an output class for msisdn and calls deliver on it' do
       subject.stub(:output_for) { |msisdn|
-        Smess::Test.new(sms)
+        output = Smess::Test.new({})
+        output.sms = sms
+        output
       }
       subject.deliver
       Smess::Test.instance.sms.should == sms
