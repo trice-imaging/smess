@@ -2,11 +2,11 @@ require 'uri'
 require 'httpi'
 
 module Smess
-  class Mblox
+  class Mblox < Output
     include Smess::Logging
 
-    def initialize(sms)
-      @sms = sms
+    def initialize(config)
+      super
       @results = []
     end
 
@@ -25,6 +25,16 @@ module Smess
       results.first
     end
 
+    attr_accessor :username, :password, :shortcode, :profile_id, :sid
+    def validate_config
+      @username   = config.fetch(:username)
+      @password   = config.fetch(:password)
+      @shortcode  = config.fetch(:shortcode)
+      @profile_id = config.fetch(:profile_id)
+      @sid        = config.fetch(:sid)
+    end
+
+
     def hash_data_for(xml_params)
       rand = (SecureRandom.random_number*100000000).to_i
       @message_id = rand
@@ -32,13 +42,13 @@ module Smess
       xml_hash = {
         notification_request: {
           notification_header: {
-            partner_name: ENV["SMESS_MBLOX_SURE_ROUTE_USER"],
-            partner_password: ENV["SMESS_MBLOX_SURE_ROUTE_PASS"]
+            partner_name: username,
+            partner_password: password
           },
           notification_list: {
             notification: {
               message: xml_params[:message],
-              profile: ENV["SMESS_MBLOX_SURE_ROUTE_PROFILE_ID"],
+              profile: profile_id,
               udh: xml_params.fetch(:udh,""),
               sender_i_d: from,
               # expire_date: "",
@@ -51,7 +61,7 @@ module Smess
               # tags: '<Tag Name=”Number”>56</Tag><Tag Name=”City”>Paris</Tag>',
               # service_desc: "",
               # content_type: "",
-              service_id: ENV["SMESS_MBLOX_SURE_ROUTE_SID"],
+              service_id: sid,
               attributes!: { sender_i_d: { "Type" => "Shortcode" } }
             },
             attributes!: { notification: { "SequenceNumber" => "1", "MessageType" => "SMS" } } # FlashSMS
@@ -70,7 +80,7 @@ module Smess
     attr_accessor :results
 
     def from
-      ENV["SMESS_MBLOX_SURE_ROUTE_SHORTCODE"]
+      shortcode
     end
 
     def parts

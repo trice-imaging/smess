@@ -1,8 +1,5 @@
 require 'spec_helper'
 
-ENV["SMESS_CARD_BOARD_FISH_USER"] = "fake"
-ENV["SMESS_CARD_BOARD_FISH_PASS"] = "fake"
-
 describe Smess::CardBoardFish do
 
   let(:sms) {
@@ -23,7 +20,14 @@ describe Smess::CardBoardFish do
     )
   }
 
-  subject { described_class.new(sms) }
+  subject {
+    output = described_class.new({
+      username: "",
+      password: ""
+    })
+    output.sms = sms
+    output
+  }
 
   it 'calls the correct http endpoint' do
     request = nil

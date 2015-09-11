@@ -20,7 +20,21 @@ describe Smess::Mblox, iso_id: "7.2.8" do
     )
   }
 
-  subject { described_class.new(sms) }
+  let(:config) {
+    {
+      username: "username",
+      password: "password",
+      shortcode: "shortcode",
+      profile_id: "profile_id",
+      sid: "sid"
+    }
+  }
+
+  subject {
+    output = described_class.new(config)
+    output.sms = sms
+    output
+  }
 
   it 'calls the correct http endpoint' do
     request = nil
@@ -53,13 +67,13 @@ describe Smess::Mblox, iso_id: "7.2.8" do
     }
     subject.deliver
     # one expectation per it statement? eh... close enough.
-    expect(xml_data[:notification_request][:notification_header][:partner_name]).to eq(ENV["SMESS_MBLOX_SURE_ROUTE_USER"])
-    expect(xml_data[:notification_request][:notification_header][:partner_password]).to eq(ENV["SMESS_MBLOX_SURE_ROUTE_PASS"])
+    expect(xml_data[:notification_request][:notification_header][:partner_name]).to eq(config[:username])
+    expect(xml_data[:notification_request][:notification_header][:partner_password]).to eq(config[:password])
     expect(xml_data[:notification_request][:notification_list][:notification][:message]).to eq(sms.message)
-    expect(xml_data[:notification_request][:notification_list][:notification][:profile]).to eq(ENV["SMESS_MBLOX_SURE_ROUTE_PROFILE_ID"])
-    expect(xml_data[:notification_request][:notification_list][:notification][:sender_i_d]).to eq(ENV["SMESS_MBLOX_SURE_ROUTE_SHORTCODE"])
+    expect(xml_data[:notification_request][:notification_list][:notification][:profile]).to eq(config[:profile_id])
+    expect(xml_data[:notification_request][:notification_list][:notification][:sender_i_d]).to eq(config[:shortcode])
     expect(xml_data[:notification_request][:notification_list][:notification][:subscriber][:subscriber_number]).to eq(sms.to)
-    expect(xml_data[:notification_request][:notification_list][:notification][:service_id]).to eq(ENV["SMESS_MBLOX_SURE_ROUTE_SID"])
+    expect(xml_data[:notification_request][:notification_list][:notification][:service_id]).to eq(config[:sid])
   end
 
   it 'generates correct udh data for a long concatenated message' do
@@ -67,7 +81,8 @@ describe Smess::Mblox, iso_id: "7.2.8" do
     HTTPI.stub(:post) { |r|
       response = HTTPI::Response.new(200, [], "")
     }
-    subject2 = described_class.new(concat_sms)
+    subject2 = described_class.new(config)
+    subject2.sms = concat_sms
     subject2.stub(:xml_data_for) { |xml_params|
       xml_datas << subject2.hash_data_for(xml_params)
       '<?xml version="1.0"?><nothing></nothing>'

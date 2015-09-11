@@ -9,6 +9,7 @@ require 'active_support/core_ext'
 
 require "smess/version"
 require 'smess/logging'
+require 'smess/output'
 require 'smess/utils'
 require 'smess/sms'
 require 'smess/outputs/http_base'
@@ -32,6 +33,12 @@ module Smess
     Sms.new(*args)
   end
 
+  def self.named_output_instance(name)
+    output_class_name = config.configured_outputs.fetch(name)[:type].to_s.camelize
+    conf = config.configured_outputs[name][:config]
+    "Smess::#{output_class_name}".constantize.new(conf)
+  end
+
   def self.config
     @config ||= Config.new
   end
@@ -45,15 +52,14 @@ module Smess
   end
 
   class Config
-    attr_accessor :nothing, :default_output, :country_codes, :output_types, :outputs, :output_configs, :output_by_country_code
+    attr_accessor :nothing, :default_output, :country_codes, :output_types, :configured_outputs, :output_by_country_code
 
     def initialize
       @nothing = false
       @default_output = :global_mouth
       @country_codes = [1, 20, 212, 33, 34, 44, 46, 49, 594, 966, 971]
       @output_types = %i{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
-      @outputs = []
-      @output_configs = {}
+      @configured_outputs = {test: {type: :test, config: nil}}
       @output_by_country_code = {
         "1"   => :iconectiv,        # USA
         "1242"=> :global_mouth,     # Bahamas
@@ -97,21 +103,26 @@ module Smess
       true
     end
 
-    def register_output(name, country_codes, type, config)
-      name = name.to_sym
-      type = type.to_sym
+    def register_output(options)
+      name = options.fetch(:name).to_sym
+      type = options.fetch(:type).to_sym
+      country_codes = options.fetch(:country_codes)
+      config = options.fetch(:config)
+
       raise ArgumentError.new("Duplicate output name") if outputs.include? name
       raise ArgumentError.new("Unknown output type specified") unless output_types.include? type
 
-      outputs << name
-      output_configs[name] = {type: type, config: config}
+      configured_outputs[name] = {type: type, config: config}
       country_codes.each do |cc|
         add_country_code(cc, name)
       end
     end
 
-  end
+    def outputs
+      configured_outputs.keys
+    end
 
+  end
 end
 
 # httpclient does not send basic auth correctly, or at all.

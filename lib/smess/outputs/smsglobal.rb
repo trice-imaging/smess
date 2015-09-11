@@ -11,17 +11,15 @@ module Smess
       http_post request
     end
 
+    def validate_config
+      @username = config.fetch(:username)
+      @password = config.fetch(:password)
+      @sender_id = config.fetch(:sender_id)
+    end
+
     private
 
-    def username
-      ENV["SMESS_SMSGLOBAL_USER"]
-    end
-    def password
-      ENV["SMESS_SMSGLOBAL_PASS"]
-    end
-    def sender_id
-      ENV["SMESS_SMSGLOBAL_SENDER_ID"]
-    end
+    attr_accessor :username, :password, :sender_id
 
     def url
       "https://www.smsglobal.com/http-api.php"

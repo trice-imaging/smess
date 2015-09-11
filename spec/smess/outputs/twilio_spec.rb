@@ -25,7 +25,16 @@ describe Smess::Twilio, iso_id: "7.2.4" do
     )
   }
 
-  subject { described_class.new(sms) }
+  subject {
+    output = described_class.new({
+      sid: "",
+      auth_token: "",
+      from: "",
+      callback_url: ""
+    })
+    output.sms = sms
+    output
+  }
 
   it 'generates correct data for a single message' do
     request = nil

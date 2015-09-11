@@ -20,7 +20,15 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
     )
   }
 
-  subject { described_class.new(sms) }
+  subject {
+    output = described_class.new({
+      username: "",
+      password: "",
+      sender_id: ""
+    })
+    output.sms = sms
+    output
+  }
 
   it 'calls the correct http endpoint' do
     request = nil

@@ -2,11 +2,11 @@ require 'uri'
 require 'httpi'
 
 module Smess
-  class HttpBase
+  class HttpBase < Output
     include Smess::Logging
 
-    def initialize(sms)
-      @sms = sms
+    def initialize(config)
+      super
       HTTPI.log_level = :debug
     end
 

@@ -1,5 +1,5 @@
 module Smess
-  class Test
+  class Test < Output
 
     @@instance = nil
     @delivery_result = {
@@ -11,15 +11,17 @@ module Smess
       }
     }
     class << self; attr_accessor :delivery_result end
-    attr_reader :sms
 
-    def initialize(sms)
-      @sms = sms
+    def initialize(config)
+      super
       @@instance = self
     end
 
     def self.instance
       @@instance
+    end
+
+    def validate_config
     end
 
     def deliver

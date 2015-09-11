@@ -1,12 +1,19 @@
 require 'twilio-ruby'
 
 module Smess
-  class Twilio
+  class Twilio < Output
     include Smess::Logging
 
-    def initialize(sms)
-      @sms = sms
+    def initialize(config)
+      super
       @results = []
+    end
+
+    def validate_config
+      @sid = config.fetch(:sid)
+      @auth_token = config.fetch(:auth_token)
+      @from = config.fetch(:from)
+      @callback_url = config.fetch(:callback_url)
     end
 
     def deliver
@@ -15,12 +22,8 @@ module Smess
 
     private
 
-    attr_reader :sms
+    attr_accessor :sid, :auth_token, :from, :callback_url
     attr_accessor :results
-
-    def from
-      ENV["SMESS_TWILIO_FROM"]
-    end
 
     def parts
       @parts ||= split_parts
@@ -36,7 +39,7 @@ module Smess
           from: from,
           to: "+#{sms.to}",
           body: message,
-          status_callback: ENV["SMESS_TWILIO_CALLBACK_URL"]
+          status_callback: callback_url
         })
         result = normal_result(response)
       rescue => e
@@ -50,7 +53,7 @@ module Smess
     end
 
     def client
-      @client ||= ::Twilio::REST::Client.new(ENV["SMESS_TWILIO_SID"], ENV["SMESS_TWILIO_AUTH_TOKEN"])
+      @client ||= ::Twilio::REST::Client.new(sid, auth_token)
     end
 
     def normal_result(response)

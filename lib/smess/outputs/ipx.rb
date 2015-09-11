@@ -1,9 +1,18 @@
 module Smess
-  class Ipx
+  class Ipx < Output
     include Smess::Logging
 
-    def initialize(sms)
-      @sms = sms
+    attr_accessor :sms_url, :username, :password, :shortcode, :account_name, :service_name, :service_meta_data_verizon, :service_meta_data_t_mobile_us
+    def validate_config
+      @sms_url                       = config.fetch(:sms_url)
+      @username                      = config.fetch(:username)
+      @password                      = config.fetch(:password)
+      @shortcode                     = config.fetch(:shortcode)
+      @account_name                  = config.fetch(:account_name)
+      @service_name                  = config.fetch(:service_name)
+      @service_meta_data_verizon     = config.fetch(:service_meta_data_verizon, "")
+      @service_meta_data_t_mobile_us = config.fetch(:service_meta_data_t_mobile_us, "")
+
       @results = []
       @endpoint = sms_url
       @credentials = {
@@ -23,7 +32,7 @@ module Smess
         # halt and use fallback on error...
         if last_result_was_error
           logger.info "IPX_ERROR: #{results.last}"
-          return fallback_to_twilio || results.first
+          return results.first
         end
       end
 
@@ -35,46 +44,6 @@ module Smess
 
     attr_reader :sms
     attr_accessor :results
-
-    def account_key_prefix
-      "IPX"
-    end
-
-    def account_key_for(key_part)
-      "SMESS_#{account_key_prefix}_#{key_part}"
-    end
-
-    def sms_url
-      ENV[ account_key_for("URL") ]
-    end
-
-    def shortcode
-      ENV[ account_key_for("SHORTCODE") ]
-    end
-
-    def username
-      ENV[ account_key_for("USER") ]
-    end
-
-    def password
-      ENV[ account_key_for("PASS") ]
-    end
-
-    def account_name
-      ENV[ account_key_for("ACCOUNT_NAME") ]
-    end
-
-    def service_name
-      ENV["SMESS_SERVICE_NAME"]
-    end
-
-    def service_meta_data_t_mobile_us
-      ENV[ account_key_for("SERVICE_META_DATA_T_MOBILE_US") ]
-    end
-
-    def service_meta_data_verizon
-      ENV[ account_key_for("SERVICE_META_DATA_VERIZON") ]
-    end
 
     def soap_body
       @soap_body ||= {

@@ -10,18 +10,17 @@ module Smess
       http_get request
     end
 
+    attr_accessor :username, :password, :sender_id
+    def validate_config
+      @username  = config.fetch(:username)
+      @password  = config.fetch(:password)
+      @sender_id = config.fetch(:sender_id)
+    end
+
     private
 
     def username
-      ENV["SMESS_GLOBAL_MOUTH_USER"].dup # paranoid safeguard
-    end
-
-    def password
-      ENV["SMESS_GLOBAL_MOUTH_PASS"]
-    end
-
-    def sender_id
-      ENV["SMESS_GLOBAL_MOUTH_SENDER_ID"]
+      @username.dup # paranoid safeguard
     end
 
     def url

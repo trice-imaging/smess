@@ -23,11 +23,11 @@ end
 
 
 module Smess
-  class Clickatell
+  class Clickatell < Output
     include Smess::Logging
 
-    def initialize(sms)
-      @sms = sms
+    def initialize(config)
+      super
       ::Clickatell::API.debug_mode = true
       ::Clickatell::API.secure_mode = true
     end
@@ -47,13 +47,22 @@ module Smess
       result
     end
 
+    attr_accessor :api_id, :user, :pass, :sender_id, :sender_ids
+    def validate_config
+      @api_id     = config.fetch(:api_id)
+      @user       = config.fetch(:user)
+      @pass       = config.fetch(:pass)
+      @sender_id  = config.fetch(:sender_id)
+      @sender_ids = config.fetch(:sender_ids)
+    end
+
     private
 
     attr_reader :sms
 
     def from
       return nil if sender_not_supported
-      ENV["SMESS_CLICKATELL_SENDER_IDS"].split(",").include?(sms.originator) ? sms.originator : ENV["SMESS_CLICKATELL_SENDER_ID"]
+      sender_ids.split(",").include?(sms.originator) ? sms.originator : sender_id
     end
 
     def messages
@@ -74,11 +83,7 @@ module Smess
     end
 
     def api
-      @api ||= ::Clickatell::API.authenticate(
-        ENV["SMESS_CLICKATELL_API_ID"],
-        ENV["SMESS_CLICKATELL_USER"],
-        ENV["SMESS_CLICKATELL_PASS"]
-      )
+      @api ||= ::Clickatell::API.authenticate(api_id, user, pass)
     end
 
     def normal_result(response)

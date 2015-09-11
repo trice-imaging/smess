@@ -8,12 +8,12 @@ module Smess
       @to = opts.fetch(:to, nil)
       @message = opts.fetch(:message, "")
       @originator = opts.fetch(:originator, nil)
-      @output = opts.fetch(:output, "auto")
+      @output = opts.fetch(:output, :auto).to_sym
     end
 
     def deliver
-      out_class = output
-      out = "Smess::#{out_class.to_s.camelize}".constantize.new(self)
+      out = Smess.named_output_instance(output)
+      out.sms = self
       results = out.deliver
     end
 

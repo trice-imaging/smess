@@ -6,19 +6,13 @@ module Smess
       http_get request
     end
 
+    attr_accessor :username, :password
+    def validate_config
+      @username  = config.fetch(:username)
+      @password  = config.fetch(:password)
+    end
+
     private
-
-    def username
-      ENV["SMESS_CARD_BOARD_FISH_USER"]
-    end
-
-    def password
-      ENV["SMESS_CARD_BOARD_FISH_PASS"]
-    end
-
-    def sender_id
-      ENV["SMESS_SENDER_ID"]
-    end
 
     def url
       "https://sms2.cardboardfish.com:9444/HTTPSMS"
