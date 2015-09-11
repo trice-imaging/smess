@@ -32,7 +32,7 @@ module Smess
         # halt and use fallback on error...
         if last_result_was_error
           logger.info "IPX_ERROR: #{results.last}"
-          return results.first
+          return fallback_to_twilio || results.first
         end
       end
 
