@@ -9,6 +9,11 @@ $:.unshift(smess_path) if File.directory?(smess_path) && !$:.include?(smess_path
 require smess_path+'/lib/smess'
 
 
+Smess.configure do |config|
+  config.default_sender_id = ENV["SMESS_SENDER_ID"]
+end
+
+
 phone_to_send_to = "..."
 
 @sms = Smess::Sms.new(

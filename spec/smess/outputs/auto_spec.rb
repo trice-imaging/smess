@@ -42,6 +42,8 @@ describe Smess::Auto, iso_id: "7.2.1" do
       Smess.reset_config
       Smess.configure do |config|
 
+        config.default_output = :global_mouth
+
         config.register_output({
           name: :iconectiv,
           country_codes: ["1"],
@@ -133,13 +135,15 @@ describe Smess::Auto, iso_id: "7.2.1" do
     }
 
     it 'asks for an output class for msisdn and calls deliver on it' do
+      subject.output_name = :test
       subject.stub(:output_for) { |msisdn|
         output = Smess::Test.new({})
         output.sms = sms
         output
       }
-      subject.deliver
+      result = subject.deliver
       Smess::Test.instance.sms.should == sms
+      result[:sent_with].should == :test
     end
 
   end

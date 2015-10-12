@@ -1,12 +1,14 @@
 module Smess
   class Auto < Output
 
+    attr_accessor :output_name
+
     def validate_config
     end
 
     def deliver
       out = output_for sms.to
-      out.deliver
+      out.deliver.merge({sent_with: output_name})
     end
 
     def get_output_name_for_msisdn(msisdn)
@@ -17,7 +19,8 @@ module Smess
     end
 
     def output_for(msisdn)
-      output = Smess.named_output_instance( get_output_name_for_msisdn(msisdn) )
+      output_name = get_output_name_for_msisdn(msisdn)
+      output = Smess.named_output_instance( output_name )
       output.sms = sms
       output
     end

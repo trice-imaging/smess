@@ -48,7 +48,7 @@ module Smess
     def deliver
       # Do work and return a hash like this one
       {
-      :response_code => '-1',
+        :response_code => '-1',
         :response  => {
           :temporaryError =>'true',
           :responseCode => '-1',
@@ -75,10 +75,29 @@ or
 gem install smess
 ```
 
-### Set a hundred ENV vars
-All credentials, and other account-sepcific settings, have been extracted into ENV vars allowing you to set these any way you like. I use Dotenv but Figaro or other env manager should work equally well. As should setting them any other way.
+### Configure the SMS providers you use
+Smess is very configurable and there is a fair amout of things to setup. Smess chooses SMS provider based on the recipient phone number and is meant to abstract away the differences betweenn providers. You have to provide the account information and "configure" each provider you actually use. THe repository contains an example_config.rb file which should be a fairly up-to date config of how I personally have providers mapped to different countries based on delivery success rates.
 
-All ENV variables used by Smess are listed in the file .env. You only need to define the aggregator credentials you actually use though.
+A pretty minimal setup would look something like this:
+
+```ruby
+Smess.configure do |config|
+
+  config.default_sender_id = ENV["SMESS_SENDER_ID"]
+  config.default_output = :my_default
+  config.register_output({
+    name: :my_default,
+    country_codes: ["1", "46"],
+    type: :global_mouth,
+    config: {
+      username:  ENV["SMESS_GLOBAL_MOUTH_USER"],
+      password:  ENV["SMESS_GLOBAL_MOUTH_PASS"],
+      sender_id: ENV["SMESS_GLOBAL_MOUTH_SENDER_ID"]
+    }
+  })
+end
+```
+
 
 ## Usage
 
@@ -87,7 +106,7 @@ sms = Smess.new(
   to: '46701234567', # phone number in normalized msisdn format
   message: 'Test SMS', # Message text
   originator: 'TestSuite', # originator, sender id. This has many names. Outside the US this can usually be set to whatever you like.
-  output: "test" # Name of the output plugin to use. Defaults to auto select.
+  output: "test" # Optional name of the output plugin to use. Defaults to auto select.
 )
 results = sms.deliver
 puts result
