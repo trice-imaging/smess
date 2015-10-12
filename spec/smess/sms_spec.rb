@@ -18,8 +18,9 @@ describe Smess::Sms, iso_id: "7.3" do
   end
 
   it 'delivering should instantiate an output object and pass itself to it' do
-    sms.deliver
+    results = sms.deliver
     sms.should == Smess::Test.instance.sms
+    sms.results[:sent_with].should == :test
   end
 
 end

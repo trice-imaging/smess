@@ -14,7 +14,7 @@ module Smess
     def deliver
       out = Smess.named_output_instance(output)
       out.sms = self
-      results = out.deliver
+      self.results = {sent_with: output}.merge(out.deliver)
     end
 
     def delivered?
