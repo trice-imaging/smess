@@ -9,11 +9,12 @@ module Smess
       @results = []
     end
 
-    attr_accessor :sid, :auth_token, :from, :callback_url
+    attr_accessor :sid, :auth_token, :from, :messaging_service_sid, :callback_url
     def validate_config
       @sid = config.fetch(:sid)
       @auth_token = config.fetch(:auth_token)
-      @from = config.fetch(:from)
+      @from = config.fetch(:from, nil)
+      @messaging_service_sid = config.fetch(:messaging_service_sid, nil)
       @callback_url = config.fetch(:callback_url)
     end
 
@@ -35,12 +36,17 @@ module Smess
 
     def send_one_sms(message)
       begin
-        response = create_client_message({
-          from: from,
+        opts = {
           to: "+#{sms.to}",
           body: message,
           status_callback: callback_url
-        })
+        }
+        if messaging_service_sid.present?
+          opts[:messaging_service_sid] =  messaging_service_sid
+        else
+          opts[:from] =  from
+        end
+        response = create_client_message(opts)
         result = normal_result(response)
       rescue => e
         result = result_for_error(e)
