@@ -52,13 +52,12 @@ module Smess
   end
 
   class Config
-    attr_accessor :nothing, :default_output, :default_sender_id, :default_sender_id, :country_codes, :output_types, :configured_outputs, :output_by_country_code
+    attr_accessor :nothing, :default_output, :default_sender_id, :default_sender_id, :output_types, :configured_outputs, :output_by_country_code
 
     def initialize
       @nothing = false
       @default_output = nil
       @default_sender_id = "Smess"
-      @country_codes = []
       @output_types = %i{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
       @configured_outputs = {test: {type: :test, config: nil}}
       @output_by_country_code = {}
@@ -81,20 +80,24 @@ module Smess
     def register_output(options)
       name = options.fetch(:name).to_sym
       type = options.fetch(:type).to_sym
-      country_codes = options.fetch(:country_codes)
+      countries = options.fetch(:country_codes)
       config = options.fetch(:config)
 
       raise ArgumentError.new("Duplicate output name") if outputs.include? name
       raise ArgumentError.new("Unknown output type specified") unless output_types.include? type
 
       configured_outputs[name] = {type: type, config: config}
-      country_codes.each do |cc|
+      countries.each do |cc|
         add_country_code(cc, name)
       end
     end
 
     def outputs
       configured_outputs.keys
+    end
+
+    def country_codes
+      output_by_country_code.keys
     end
 
   end
