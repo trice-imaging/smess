@@ -1,4 +1,5 @@
 # rspec -c -f d
+ENV['RAILS_ENV'] = 'test'
 require 'rubygems'
 require 'logger'
 require 'fileutils'

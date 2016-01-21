@@ -59,8 +59,12 @@ module Smess
       @default_output = nil
       @default_sender_id = "Smess"
       @output_types = %i{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
-      @configured_outputs = {test: {type: :test, config: nil}}
+      @configured_outputs = {}
       @output_by_country_code = {}
+
+      if ENV["RAILS_ENV"] == "test"
+        @configured_outputs = {test: {type: :test, config: nil}}
+      end
 
       register_output({
         name: :auto,
