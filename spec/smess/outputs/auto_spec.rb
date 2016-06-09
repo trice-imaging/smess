@@ -42,7 +42,7 @@ describe Smess::Auto, iso_id: "7.2.1" do
       Smess.reset_config
       Smess.configure do |config|
 
-        config.default_output = :global_mouth
+        config.default_output = :test
 
         config.register_output({
           name: :iconectiv,
@@ -127,7 +127,7 @@ describe Smess::Auto, iso_id: "7.2.1" do
   end
 
   describe '#deliver' do
-    let(:sms){ Smess::Sms.new(to:"12345677889") }
+    let(:sms){ Smess::Sms.new(to:"99912345677") }
     subject {
       output = Smess::Auto.new({})
       output.sms = sms
@@ -135,15 +135,13 @@ describe Smess::Auto, iso_id: "7.2.1" do
     }
 
     it 'asks for an output class for msisdn and calls deliver on it' do
-      subject.output_name = :test
-      subject.stub(:output_for) { |msisdn|
-        output = Smess::Test.new({})
-        output.sms = sms
-        output
-      }
       result = subject.deliver
       Smess::Test.instance.sms.should == sms
-      result[:sent_with].should == :test
+    end
+
+    it 'asks for an output class for msisdn and calls deliver on it' do
+      result = sms.deliver
+      expect(result[:sent_with]).to eq(:test)
     end
 
   end

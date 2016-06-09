@@ -19,7 +19,7 @@ module Smess
     end
 
     def output_for(msisdn)
-      output_name = get_output_name_for_msisdn(msisdn)
+      @output_name = get_output_name_for_msisdn(msisdn)
       output = Smess.named_output_instance( output_name )
       output.sms = sms
       output
