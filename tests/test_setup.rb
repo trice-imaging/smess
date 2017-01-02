@@ -2,7 +2,7 @@
 require 'rubygems'
 
 require 'dotenv'
-Dotenv.load ".env.development", '.env'
+Dotenv.overload ".env.development"
 
 smess_path = File.expand_path('../', File.dirname(__FILE__))
 $:.unshift(smess_path) if File.directory?(smess_path) && !$:.include?(smess_path)

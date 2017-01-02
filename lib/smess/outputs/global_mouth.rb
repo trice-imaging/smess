@@ -24,7 +24,7 @@ module Smess
     end
 
     def url
-      "https://mcm.globalmouth.com:8443/api/mcm"
+      config.fetch(:url) || "https://mcm.globalmouth.com:8443/api/mcm"
     end
 
     def params

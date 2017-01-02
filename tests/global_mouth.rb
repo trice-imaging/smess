@@ -7,6 +7,7 @@ Smess.configure do |config|
     country_codes: ["1", "46"],
     type: :global_mouth,
     config: {
+      url:       ENV["SMESS_GLOBAL_MOUTH_URL"],
       username:  ENV["SMESS_GLOBAL_MOUTH_USER"],
       password:  ENV["SMESS_GLOBAL_MOUTH_PASS"],
       sender_id: ENV["SMESS_GLOBAL_MOUTH_SENDER_ID"]
