@@ -18,5 +18,5 @@ phone_to_send_to = "..."
 
 @sms = Smess::Sms.new(
   to: phone_to_send_to,
-  message: "Smess Test. 3 funky characters: åäö might work."
+  message: "Smess Test. 3 funky characters: åäö might work. aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa past the 160 END"
 )
