@@ -22,6 +22,7 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
 
   subject {
     output = described_class.new({
+      url: "https://example.com/sms-api/",
       username: "",
       password: "",
       sender_id: ""
@@ -39,9 +40,8 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
     subject.deliver
 
     expect(request.url.scheme).to eq('https')
-    expect(request.url.host).to eq('mcm.globalmouth.com')
-    expect(request.url.port).to eq(8443)
-    expect(request.url.path).to eq('/api/mcm')
+    expect(request.url.host).to eq('example.com')
+    expect(request.url.path).to eq('/sms-api/')
   end
 
   it 'generates correct data for a single message' do
