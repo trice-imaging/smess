@@ -76,11 +76,13 @@ module Smess
     end
 
     def result_for_error(e)
+      code = "-1"
+      code = e.code.to_s unless e.code.nil?
       {
-        response_code: '-1',
+        response_code: code,
         response: {
           temporaryError: 'true',
-          responseCode: '-1',
+          responseCode: code,
           responseText: e.message
         },
         data: result_data
