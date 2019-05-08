@@ -20,6 +20,7 @@ require 'smess/outputs/card_board_fish'
 require 'smess/outputs/clickatell'
 require 'smess/outputs/smsglobal'
 require 'smess/outputs/global_mouth'
+require 'smess/outputs/link_mobility'
 require 'smess/outputs/mblox'
 require 'smess/outputs/twilio'
 require 'smess/outputs/iconectiv'
@@ -58,7 +59,7 @@ module Smess
       @nothing = false
       @default_output = nil
       @default_sender_id = "Smess"
-      @output_types = %i{auto card_board_fish clickatell global_mouth iconectiv mblox smsglobal twilio}
+      @output_types = %i{auto card_board_fish clickatell global_mouth link_mobility iconectiv mblox smsglobal twilio}
       @configured_outputs = {}
       @output_by_country_code = {}
 
