@@ -55,7 +55,7 @@ module Smess
     end
 
     def create_client_message(params)
-      client.account.messages.create(params)
+      client.api.account.messages.create(params)
     end
 
     def client
@@ -69,7 +69,12 @@ module Smess
       {
         message_id: response.sid,
         response_code: response_code.to_s,
-        response: MultiJson.load(client.last_response.body),
+        response: {
+          sid: response.sid,
+          status: response.status,
+          error_code: response.error_code,
+          error_message: response.error_message
+        },
         destination_address: sms.to,
         data: result_data
       }
@@ -77,7 +82,7 @@ module Smess
 
     def result_for_error(e)
       code = "-1"
-      code = e.code.to_s unless e.code.nil?
+      code = e.code.to_s rescue code
       {
         response_code: code,
         response: {

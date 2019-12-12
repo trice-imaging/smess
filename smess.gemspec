@@ -21,10 +21,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'savon', '1.2.0'
   s.add_dependency 'httpi'
   s.add_dependency 'clickatell'
-  s.add_dependency 'twilio-ruby'
+  s.add_dependency 'twilio-ruby', '>= 5.26.0', '<= 5.30.0'
   s.add_dependency 'activesupport', '>=3.0'
 
   s.files = Dir["{lib}/**/*", "[A-Z]*", "init.rb"]
-  s.required_ruby_version = ">= 1.9.2"
+  s.required_ruby_version = ">= 2.0.0"
   s.required_rubygems_version = ">= 1.3.7"
 end

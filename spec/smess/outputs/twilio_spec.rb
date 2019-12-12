@@ -5,6 +5,21 @@ class FakeTwilioSender
   end
 end
 
+class FakeTwilioResponse
+  def sid
+    "SM727fd423411e4b1b8dcdc4d48ee07f20"
+  end
+  def status
+    "accepted"
+  end
+  def error_code
+    nil
+  end
+  def error_message
+    nil
+  end
+end
+
 describe Smess::Twilio, iso_id: "7.2.4" do
 
   let(:sms) {
@@ -40,6 +55,7 @@ describe Smess::Twilio, iso_id: "7.2.4" do
     request = nil
     subject.stub(:create_client_message) { |data|
       request = data
+      FakeTwilioResponse.new
     }
     subject.deliver
 
