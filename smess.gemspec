@@ -17,12 +17,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '>= 2.4.0'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'dotenv'
-  s.add_dependency 'mail'
+  s.add_dependency 'mail', '~> 2.7'
   s.add_dependency 'savon', '1.2.0'
-  s.add_dependency 'httpi'
-  s.add_dependency 'clickatell'
-  s.add_dependency 'twilio-ruby', '>= 5.26.0', '<= 5.30.0'
-  s.add_dependency 'activesupport', '>=3.0'
+  s.add_dependency 'httpi', '~> 1.1'
+  s.add_dependency 'clickatell', '~> 0'
+  s.add_dependency 'twilio-ruby', '~> 5.26'
+  s.add_dependency 'activesupport', '>= 3.0.0', '< 6.0.0'
 
   s.files = Dir["{lib}/**/*", "[A-Z]*", "init.rb"]
   s.required_ruby_version = ">= 2.0.0"
