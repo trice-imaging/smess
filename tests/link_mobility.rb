@@ -12,8 +12,24 @@ Smess.configure do |config|
       password:            ENV["SMESS_LINKMOBILITY_PASS"],
       platform_id:         ENV["SMESS_LINKMOBILITY_PLATFORM_ID"],
       platform_partner_id: ENV["SMESS_LINKMOBILITY_PLATFORM_PARTNER_ID"],
+      gate_id:             ENV["SMESS_LINKMOBILITY_GATE_ID"]
+    }
+  })
+end
+
+Smess.configure do |config|
+  config.register_output({
+    name: :link_mobility_uk,
+    country_codes: ["46"],
+    type: :link_mobility,
+    config: {
+      url:                 ENV["SMESS_LINKMOBILITY_URL"],
+      username:            ENV["SMESS_LINKMOBILITY_USER"],
+      password:            ENV["SMESS_LINKMOBILITY_PASS"],
+      platform_id:         ENV["SMESS_LINKMOBILITY_PLATFORM_ID"],
+      platform_partner_id: ENV["SMESS_LINKMOBILITY_PLATFORM_PARTNER_ID"],
       gate_id:             ENV["SMESS_LINKMOBILITY_GATE_ID"],
-      long_number:         ENV["SMESS_LINKMOBILITY_LONG_NUMBER"]
+      sender_id:         ENV["SMESS_LINKMOBILITY_LONG_NUMBER"]
     }
   })
 end
