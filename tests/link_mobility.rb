@@ -15,12 +15,10 @@ Smess.configure do |config|
       gate_id:             ENV["SMESS_LINKMOBILITY_GATE_ID"]
     }
   })
-end
 
-Smess.configure do |config|
   config.register_output({
     name: :link_mobility_uk,
-    country_codes: ["46"],
+    country_codes: ["44"],
     type: :link_mobility,
     config: {
       url:                 ENV["SMESS_LINKMOBILITY_URL"],

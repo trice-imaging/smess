@@ -14,7 +14,7 @@ Smess.configure do |config|
 end
 
 
-phone_to_send_to = "46709885588"
+phone_to_send_to = "..."
 
 @sms = Smess::Sms.new(
   to: phone_to_send_to,
