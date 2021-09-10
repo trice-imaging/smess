@@ -19,7 +19,7 @@ module Smess
     end
 
     def deliver
-      send_one_sms sms.message.strip_nongsm_chars
+      send_one_sms sms.message
     end
 
     private
@@ -31,7 +31,7 @@ module Smess
     end
 
     def split_parts
-      Smess.separate_sms(sms.message.strip_nongsm_chars).reject {|s| s.empty? }
+      Smess.separate_sms(sms.message).reject {|s| s.empty? }
     end
 
     def send_one_sms(message)
@@ -46,9 +46,12 @@ module Smess
         else
           opts[:from] =  from
         end
+        puts "about to create_client_message"
         response = create_client_message(opts)
+        puts "got response #{response.inspect}"
         result = normal_result(response)
       rescue => e
+        puts "got exception #{e.inspect}"
         result = result_for_error(e)
       end
       result
@@ -97,7 +100,7 @@ module Smess
     def result_data
       {
         to: sms.to,
-        text: sms.message.strip_nongsm_chars,
+        text: sms.message,
         from: from
       }
     end

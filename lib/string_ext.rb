@@ -62,7 +62,7 @@ class String
     end
 
     pattern = Regexp.new( "[^"+allowed+"]" )
-    self.gsub!(pattern,"")
+    self.gsub!(pattern, replacement)
   end
 
 

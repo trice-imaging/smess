@@ -23,4 +23,19 @@ describe Smess::Sms, iso_id: "7.3" do
     sms.results[:sent_with].should == :test
   end
 
+  it 'changing the response' do
+    Smess::Test.delivery_result = {
+      :response_code => '-100',
+      :response  => {
+        :temporaryError =>'false',
+        :responseCode => '-100',
+        :responseText => 'Custom return value'
+      }
+    }
+    results = sms.deliver
+    sms.should == Smess::Test.instance.sms
+    sms.results[:sent_with].should == :test
+    puts sms.results
+  end
+
 end
