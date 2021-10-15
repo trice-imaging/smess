@@ -43,7 +43,7 @@ module Smess
         source: from,
         sourceTON: sourceTON,
         destination: "+#{sms.to}",
-        userData: sms.message.strip_nongsm_chars,
+        userData: sms.message,
         platformId: platform_id,
         platformPartnerId: platform_partner_id,
         dcs: "TEXT",
