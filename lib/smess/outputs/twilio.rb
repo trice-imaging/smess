@@ -39,16 +39,15 @@ module Smess
         opts = {
           to: "+#{sms.to}",
           body: message,
-          status_callback: callback_url
+          status_callback: callback_url,
+          provide_feedback: true
         }
         if messaging_service_sid.present?
           opts[:messaging_service_sid] =  messaging_service_sid
         else
           opts[:from] =  from
         end
-        puts "about to create_client_message"
         response = create_client_message(opts)
-        puts "got response #{response.inspect}"
         result = normal_result(response)
       rescue => e
         puts "got exception #{e.inspect}"
