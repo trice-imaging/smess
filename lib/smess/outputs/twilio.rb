@@ -20,7 +20,7 @@ module Smess
     end
 
     def send_feedback(message_sid)
-      @client.messages(message_sid).feedback.create(outcome: "confirmed")
+      client.messages(message_sid).feedback.create(outcome: "confirmed")
     end
 
     def deliver
