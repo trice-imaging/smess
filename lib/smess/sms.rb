@@ -24,7 +24,7 @@ module Smess
     def send_feedback(to, message_sid)
       out = Smess.named_output_instance(output)
       @to = to
-      output.sms = self
+      out.sms = self
       out.send_feedback(message_sid)
     end
 
