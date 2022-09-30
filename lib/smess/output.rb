@@ -19,5 +19,9 @@ module Smess
       raise NotImplementedError.new("You must define deliver in your Smess output class")
     end
 
+    def send_feedback(_message_sid)
+      nil
+    end
+
   end
 end
