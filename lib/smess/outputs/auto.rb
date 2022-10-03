@@ -11,6 +11,11 @@ module Smess
       out.deliver.merge({sent_with: output_name})
     end
 
+    def send_feedback(message_sid)
+      out = output_for sms.to
+      out.send_feedback(message_sid)
+    end
+
     def get_output_name_for_msisdn(msisdn)
       3.downto(0).each do |index|
         return Smess.config.output_by_country_code[msisdn[0..index]] if Smess.config.output_by_country_code.key? msisdn[0..index]
