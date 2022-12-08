@@ -39,19 +39,27 @@ module Smess
       Smess.separate_sms(sms.message).reject { |s| s.empty? }
     end
 
+    def to
+      "+#{sms.to}"
+    end
+
+    def sender
+      if messaging_service_sid.present?
+        {messaging_service_sid: messaging_service_sid}
+      else
+        {from: from}
+      end
+    end
+
     def send_one_sms(message)
       begin
         opts = {
-          to: "+#{sms.to}",
+          to: to,
           body: message,
           status_callback: callback_url,
           provide_feedback: true
         }
-        if messaging_service_sid.present?
-          opts[:messaging_service_sid] = messaging_service_sid
-        else
-          opts[:from] = from
-        end
+        opts.merge!(sender)
         response = create_client_message(opts)
         result = normal_result(response)
       rescue => e
