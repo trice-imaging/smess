@@ -3,8 +3,22 @@ require File.expand_path("../test_setup", __FILE__)
 
 Smess.configure do |config|
   config.register_output({
-    name: :twilio_whatsapp,
+    name: :twilio,
     country_codes: ["1", "46"],
+    type: :twilio,
+    config: {
+      sid:                    ENV["SMESS_TWILIO_SID"],
+      auth_token:             ENV["SMESS_TWILIO_AUTH_TOKEN"],
+      messaging_service_sid:  ENV["SMESS_TWILIO_MSG_SERVICE_SID"],
+      callback_url:           ENV["SMESS_TWILIO_CALLBACK_URL"]
+    }
+  })
+end
+
+Smess.configure do |config|
+  config.register_output({
+    name: :twilio_whatsapp,
+    country_codes: [],
     type: :twilio_whatsapp,
     config: {
       sid:                    ENV["SMESS_TWILIO_SID"],
