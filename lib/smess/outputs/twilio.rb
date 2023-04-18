@@ -70,7 +70,7 @@ module Smess
     end
 
     def create_client_message(params)
-      client.api.account.messages.create(params)
+      client.api.account.messages.create(**params)
     end
 
     def client
