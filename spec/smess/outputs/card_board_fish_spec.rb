@@ -98,13 +98,13 @@ describe Smess::CardBoardFish do
   end
 
 
-  it 'returns a response for an exception' do
+  it 'does not swallow exceptions' do
     HTTPI.stub(:get) { |r|
       raise "Hell"
     }
-    results = subject.deliver
-
-    expect(results[:response_code]).to eq("-1")
+    expect{
+      results = subject.deliver
+    }.to raise_error
   end
 
 end

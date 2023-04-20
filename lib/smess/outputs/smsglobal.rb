@@ -37,9 +37,9 @@ module Smess
     end
 
     def normal_result(response)
-      first_response = response.body.split(/\r\n/).first.split(";")
-      response_code = first_response.first.split(':').last.to_i
-      message_id = first_response.last.split('SMSGlobalMsgID:').last
+      first_response = response.body.split(/\r\n/).first.split(";") rescue nil
+      response_code = first_response.first.split(':').last.to_i rescue response.code.to_s
+      message_id = first_response.last.split('SMSGlobalMsgID:').last rescue ""
       # Successful response
       {
         message_id: message_id,

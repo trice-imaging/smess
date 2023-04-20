@@ -2,7 +2,6 @@
 smess_path = File.expand_path('.', File.dirname(__FILE__))
 $:.unshift(smess_path) if File.directory?(smess_path) && !$:.include?(smess_path)
 
-require 'mail'
 require 'active_support'
 require 'active_support/core_ext'
 

@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '>= 2.4.0'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'dotenv'
-  s.add_dependency 'mail', '~> 2.7'
   s.add_dependency 'httpi', '~> 3.0'
   s.add_dependency 'clickatell', '~> 0'
   s.add_dependency 'twilio-ruby', '~> 5.26'
