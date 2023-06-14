@@ -98,15 +98,21 @@ module Smess
     end
 
     def send_one_sms(message)
-      opts = {
-        to: to,
-        body: message,
-        status_callback: callback_url,
-        provide_feedback: true
-      }
-      opts.merge!(sender)
-      response = create_client_message(opts)
-      normal_result(response)
+      begin
+        opts = {
+          to: to,
+          body: message,
+          status_callback: callback_url,
+          provide_feedback: true
+        }
+        opts.merge!(sender)
+        response = create_client_message(opts)
+        result = normal_result(response)
+      rescue Twilio::REST::RestError => e
+        puts "got exception #{e.inspect}"
+        result = result_for_error(e)
+      end
+      result
     end
 
     def create_client_message(params)
