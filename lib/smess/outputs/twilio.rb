@@ -137,7 +137,11 @@ module Smess
           error_message: response.error_message
         },
         destination_address: sms.to,
-        data: result_data
+        data: result_data.merge({
+          price: response.price,
+          price_unit: response.price_unit,
+          num_segments: response.num_segments
+        })
       }
     end
 
