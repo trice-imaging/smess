@@ -41,10 +41,12 @@ Smess.configure do |config|
     country_codes: ["1", "971"],
     type: :twilio,
     config: {
-      sid:          ENV["SMESS_TWILIO_SID"],
-      auth_token:   ENV["SMESS_TWILIO_AUTH_TOKEN"],
-      from:         ENV["SMESS_TWILIO_FROM"],
-      callback_url: ENV["SMESS_TWILIO_CALLBACK_URL"]
+      sid:            ENV["SMESS_TWILIO_SID"],
+      # auth_token:     ENV["SMESS_TWILIO_AUTH_TOKEN"],
+      api_key:        ENV["SMESS_TWILIO_API_KEY_SID"],
+      api_secret:     ENV["SMESS_TWILIO_API_KEY_SECRET"],
+      from:           ENV["SMESS_TWILIO_FROM"],
+      callback_url:   ENV["SMESS_TWILIO_CALLBACK_URL"]
     }
   })
 

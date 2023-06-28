@@ -18,6 +18,15 @@ class FakeTwilioResponse
   def error_message
     nil
   end
+  def price
+    nil
+  end
+  def price_unit
+    nil
+  end
+  def num_segments
+    nil
+  end
 end
 
 describe Smess::Twilio, iso_id: "7.2.4" do
@@ -43,7 +52,7 @@ describe Smess::Twilio, iso_id: "7.2.4" do
   subject {
     output = described_class.new({
       sid: "",
-      auth_token: "",
+      auth_token: "a",
       from: "",
       callback_url: ""
     })

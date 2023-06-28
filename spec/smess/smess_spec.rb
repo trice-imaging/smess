@@ -26,7 +26,8 @@ describe Smess do
         type: :twilio,
         config: {
           sid: ENV["SMESS_TWILIO_SID"],
-          auth_token: ENV["SMESS_TWILIO_AUTH_TOKEN"],
+          api_key: "1",
+          api_secret: "a",
           from: "18712345678",
           callback_url: "https://example.com.com/mobile_gate/sms_report/from/twilio"
         }

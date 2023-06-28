@@ -61,7 +61,7 @@ describe Smess::Auto, iso_id: "7.2.1" do
           type: :twilio,
           config: {
             sid:          "",
-            auth_token:   "",
+            auth_token:   "a",
             from:         "",
             callback_url: ""
           }

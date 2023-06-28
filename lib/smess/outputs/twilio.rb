@@ -9,11 +9,14 @@ module Smess
       @results = []
     end
 
-    attr_accessor :sid, :auth_token, :from, :messaging_service_sid, :callback_url, :verify_service_sid
+    attr_accessor :sid, :auth_token, :api_key, :api_secret, :from, :messaging_service_sid, :callback_url, :verify_service_sid
 
     def validate_config
       @sid = config.fetch(:sid)
-      @auth_token = config.fetch(:auth_token)
+      @auth_token = config.fetch(:auth_token, nil)
+      @api_key = config.fetch(:api_key, nil)
+      @api_secret = config.fetch(:api_secret, nil)
+      raise "missing API credentials" unless auth_token.present? || (api_key.present? && api_secret.present?)
       @from = config.fetch(:from, nil)
       @messaging_service_sid = config.fetch(:messaging_service_sid, nil)
       @callback_url = config.fetch(:callback_url)
@@ -120,7 +123,7 @@ module Smess
     end
 
     def client
-      @client ||= ::Twilio::REST::Client.new(sid, auth_token)
+      @client ||= auth_token.present? ? ::Twilio::REST::Client.new(sid, auth_token) : ::Twilio::REST::Client.new(api_key, api_secret, sid)
     end
 
     def normal_result(response)
