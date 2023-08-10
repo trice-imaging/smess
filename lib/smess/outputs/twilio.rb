@@ -111,7 +111,7 @@ module Smess
         opts.merge!(sender)
         response = create_client_message(opts)
         result = normal_result(response)
-      rescue Twilio::REST::RestError => e
+      rescue ::Twilio::REST::RestError => e
         puts "got exception #{e.inspect}"
         result = result_for_error(e)
       end
