@@ -1,3 +1,3 @@
 module Smess
-  VERSION = '2.3.0'
+  VERSION = '3.1.1'
 end

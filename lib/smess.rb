@@ -2,8 +2,6 @@
 smess_path = File.expand_path('.', File.dirname(__FILE__))
 $:.unshift(smess_path) if File.directory?(smess_path) && !$:.include?(smess_path)
 
-require 'mail'
-require 'savon'
 require 'active_support'
 require 'active_support/core_ext'
 
@@ -14,17 +12,13 @@ require 'smess/utils'
 require 'smess/sms'
 require 'smess/outputs/http_base'
 require 'smess/outputs/auto'
-require 'smess/outputs/ipx'
-require 'smess/outputs/ipxus'
 require 'smess/outputs/card_board_fish'
 require 'smess/outputs/clickatell'
 require 'smess/outputs/smsglobal'
 require 'smess/outputs/global_mouth'
 require 'smess/outputs/link_mobility'
-require 'smess/outputs/mblox'
 require 'smess/outputs/twilio'
 require 'smess/outputs/twilio_whatsapp'
-require 'smess/outputs/iconectiv'
 require 'smess/outputs/test'
 
 require 'string_ext'
@@ -60,7 +54,7 @@ module Smess
       @nothing = false
       @default_output = nil
       @default_sender_id = "Smess"
-      @output_types = %i{auto card_board_fish clickatell global_mouth link_mobility iconectiv mblox smsglobal twilio twilio_whatsapp}
+      @output_types = %i{auto card_board_fish clickatell global_mouth link_mobility smsglobal twilio twilio_whatsapp}
       @configured_outputs = {}
       @output_by_country_code = {}
 

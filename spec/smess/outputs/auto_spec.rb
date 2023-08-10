@@ -45,24 +45,8 @@ describe Smess::Auto, iso_id: "7.2.1" do
         config.default_output = :test
 
         config.register_output({
-          name: :iconectiv,
-          country_codes: ["1"],
-          type: :iconectiv,
-          config: {
-            sms_url:                       "",
-            username:                      "",
-            password:                      "",
-            shortcode:                     "",
-            account_name:                  "",
-            service_name:                  "",
-            service_meta_data_verizon:     "",
-            service_meta_data_t_mobile_us: ""
-          }
-        })
-
-        config.register_output({
           name: :global_mouth,
-          country_codes: ["46"],
+          country_codes: ["1", "46"],
           type: :global_mouth,
           config: {
             username:  "",
@@ -77,7 +61,7 @@ describe Smess::Auto, iso_id: "7.2.1" do
           type: :twilio,
           config: {
             sid:          "",
-            auth_token:   "",
+            auth_token:   "a",
             from:         "",
             callback_url: ""
           }

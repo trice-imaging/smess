@@ -17,6 +17,18 @@ module Smess
       self.results = {sent_with: output}.merge(out.deliver)
     end
 
+    def verify(using: 'sms')
+      out = Smess.named_output_instance(output)
+      out.sms = self
+      self.results = {sent_with: output}.merge(out.verify(using: using))
+    end
+
+    def check(code)
+      out = Smess.named_output_instance(output)
+      out.sms = self
+      self.results = {sent_with: output}.merge(out.check(code))
+    end
+
     def delivered?
       results[:response_code] == "0"
     end
