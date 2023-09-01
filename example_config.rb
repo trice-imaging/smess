@@ -37,30 +37,16 @@ Smess.configure do |config|
   })
 
   config.register_output({
-    name: :iconectiv,
-    country_codes: ["1"],
-    type: :iconectiv,
-    config: {
-      sms_url:                       ENV["SMESS_ICONECTIV_URL"],
-      username:                      ENV["SMESS_ICONECTIV_USER"],
-      password:                      ENV["SMESS_ICONECTIV_PASS"],
-      shortcode:                     ENV["SMESS_ICONECTIV_SHORTCODE"],
-      account_name:                  ENV["SMESS_ICONECTIV_ACCOUNT_NAME"],
-      service_name:                  ENV["SMESS_SERVICE_NAME"],
-      service_meta_data_verizon:     ENV["SMESS_ICONECTIV_SERVICE_META_DATA_VERIZON"],
-      service_meta_data_t_mobile_us: ENV["SMESS_ICONECTIV_SERVICE_META_DATA_T_MOBILE_US"]
-    }
-  })
-
-  config.register_output({
     name: :twilio,
-    country_codes: ["971"],
+    country_codes: ["1", "971"],
     type: :twilio,
     config: {
-      sid:          ENV["SMESS_TWILIO_SID"],
-      auth_token:   ENV["SMESS_TWILIO_AUTH_TOKEN"],
-      from:         ENV["SMESS_TWILIO_FROM"],
-      callback_url: ENV["SMESS_TWILIO_CALLBACK_URL"]
+      sid:            ENV["SMESS_TWILIO_SID"],
+      # auth_token:     ENV["SMESS_TWILIO_AUTH_TOKEN"],
+      api_key:        ENV["SMESS_TWILIO_API_KEY_SID"],
+      api_secret:     ENV["SMESS_TWILIO_API_KEY_SECRET"],
+      from:           ENV["SMESS_TWILIO_FROM"],
+      callback_url:   ENV["SMESS_TWILIO_CALLBACK_URL"]
     }
   })
 

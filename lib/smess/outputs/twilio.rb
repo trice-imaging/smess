@@ -9,14 +9,18 @@ module Smess
       @results = []
     end
 
-    attr_accessor :sid, :auth_token, :from, :messaging_service_sid, :callback_url
+    attr_accessor :sid, :auth_token, :api_key, :api_secret, :from, :messaging_service_sid, :callback_url, :verify_service_sid
 
     def validate_config
       @sid = config.fetch(:sid)
-      @auth_token = config.fetch(:auth_token)
+      @auth_token = config.fetch(:auth_token, nil)
+      @api_key = config.fetch(:api_key, nil)
+      @api_secret = config.fetch(:api_secret, nil)
+      raise "missing API credentials" unless auth_token.present? || (api_key.present? && api_secret.present?)
       @from = config.fetch(:from, nil)
       @messaging_service_sid = config.fetch(:messaging_service_sid, nil)
       @callback_url = config.fetch(:callback_url)
+      @verify_service_sid = config.fetch(:verify_service_sid, nil)
     end
 
     def send_feedback(message_sid)
@@ -25,6 +29,51 @@ module Smess
 
     def deliver
       send_one_sms sms.message
+    end
+
+    def verify(using: 'sms')
+      response = client.verify.v2
+        .services(verify_service_sid)
+        .verifications
+        .create(to: to, channel: using)
+      {
+        'sid' => response.sid,
+        'service_sid' => response.service_sid,
+        'account_sid' => response.account_sid,
+        'to' => response.to,
+        'channel' => response.channel,
+        'status' => response.status,
+        'valid' => response.valid,
+        'lookup' => response.lookup,
+        'amount' => response.amount,
+        'payee' => response.payee,
+        'send_code_attempts' => response.send_code_attempts,
+        'date_created' => response.date_created,
+        'date_updated' => response.date_updated,
+        'sna' => response.sna,
+        'url' => response.url
+      }  
+    end
+
+    def check(code)
+      response = client.verify.v2
+        .services(verify_service_sid)
+        .verification_checks
+        .create(to: to, code: code)
+      {
+        'sid' => response.sid,
+        'service_sid' => response.service_sid,
+        'account_sid' => response.account_sid,
+        'to' => response.to,
+        'channel' => response.channel,
+        'status' => response.status,
+        'valid' => response.valid,
+        'amount' => response.amount,
+        'payee' => response.payee,
+        'date_created' => response.date_created,
+        'date_updated' => response.date_updated,
+        'sna_attempts_error_codes' => response.sna_attempts_error_codes,
+      }
     end
 
     private
@@ -62,7 +111,7 @@ module Smess
         opts.merge!(sender)
         response = create_client_message(opts)
         result = normal_result(response)
-      rescue => e
+      rescue ::Twilio::REST::RestError => e
         puts "got exception #{e.inspect}"
         result = result_for_error(e)
       end
@@ -74,7 +123,7 @@ module Smess
     end
 
     def client
-      @client ||= ::Twilio::REST::Client.new(sid, auth_token)
+      @client ||= auth_token.present? ? ::Twilio::REST::Client.new(sid, auth_token) : ::Twilio::REST::Client.new(api_key, api_secret, sid)
     end
 
     def normal_result(response)

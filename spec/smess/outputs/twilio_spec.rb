@@ -18,6 +18,15 @@ class FakeTwilioResponse
   def error_message
     nil
   end
+  def price
+    nil
+  end
+  def price_unit
+    nil
+  end
+  def num_segments
+    nil
+  end
 end
 
 describe Smess::Twilio, iso_id: "7.2.4" do
@@ -43,7 +52,7 @@ describe Smess::Twilio, iso_id: "7.2.4" do
   subject {
     output = described_class.new({
       sid: "",
-      auth_token: "",
+      auth_token: "a",
       from: "",
       callback_url: ""
     })
@@ -63,14 +72,15 @@ describe Smess::Twilio, iso_id: "7.2.4" do
     expect(request[:body]).to eq(sms.message)
   end
 
-  it 'returns a response for an exception' do
+  it 'does not swallow exceptions' do
     request = nil
     subject.stub(:create_client_message) { |data|
       raise "Hell"
     }
-    results = subject.deliver
+    expect{
+      results = subject.deliver
+    }.to raise_error
 
-    expect(results[:response_code]).to eq("-1")
   end
 
 end

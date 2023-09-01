@@ -8,6 +8,8 @@ Smess.configure do |config|
     type: :twilio,
     config: {
       sid:                    ENV["SMESS_TWILIO_SID"],
+      api_key:                ENV["SMESS_TWILIO_API_KEY_SID"],
+      api_secret:             ENV["SMESS_TWILIO_API_KEY_SECRET"],
       auth_token:             ENV["SMESS_TWILIO_AUTH_TOKEN"],
       messaging_service_sid:  ENV["SMESS_TWILIO_MSG_SERVICE_SID"],
       callback_url:           ENV["SMESS_TWILIO_CALLBACK_URL"]
