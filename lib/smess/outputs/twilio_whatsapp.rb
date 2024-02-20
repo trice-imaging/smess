@@ -6,11 +6,11 @@ module Smess
     private
 
     def to
-      "whatsapp:+#{sms.to}"
+      "whatsapp:#{sms.to}"
     end
 
     def sender
-      {from: "whatsapp:+#{from}"}
+      {from: "whatsapp:#{from}"}
     end
 
   end
