@@ -100,12 +100,25 @@ module Smess
       end
     end
 
+    def dynamic_callback_url
+      return callback_url if callback_url.nil? || callback_url.empty? || sms.callback_params.to_h.empty?
+
+      uri = URI(callback_url)
+      query = URI.encode_www_form(sms.callback_params.to_h)
+      if uri.query.nil?
+        uri.query = query
+      else
+        uri.query << "&"+query
+      end
+      uri.to_s
+    end
+
     def send_one_sms(message)
       begin
         opts = {
           to: to,
           body: message,
-          status_callback: callback_url,
+          status_callback: dynamic_callback_url,
           provide_feedback: true
         }
         opts.merge!(sender)

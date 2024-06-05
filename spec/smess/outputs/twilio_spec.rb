@@ -49,6 +49,16 @@ describe Smess::Twilio, iso_id: "7.2.4" do
     )
   }
 
+  let(:sms_with_callback_params) {
+    Smess::Sms.new(
+      to: '46701234567',
+      message: 'Test SMS',
+      originator: 'TestSuite',
+      output: "test",
+      callback_params: {foo: "bar"}
+    )
+  }
+
   subject {
     output = described_class.new({
       sid: "",
@@ -83,4 +93,23 @@ describe Smess::Twilio, iso_id: "7.2.4" do
 
   end
 
+  describe "per-sms callback params" do
+    it 'adds nothing to an empty callback url' do
+      subject.sms = sms_with_callback_params
+      expect(subject.send(:dynamic_callback_url)).to eq("")
+      
+    end
+
+    it 'adds params to callback url' do
+      subject.callback_url = "http://foo.com/callback"
+      subject.sms = sms_with_callback_params
+      expect(subject.send(:dynamic_callback_url)).to eq("http://foo.com/callback?foo=bar")
+    end
+
+    it 'merges params intoto callback url with existing params' do
+      subject.callback_url = "http://foo.com/callback?bat=baz"
+      subject.sms = sms_with_callback_params
+      expect(subject.send(:dynamic_callback_url)).to eq("http://foo.com/callback?bat=baz&foo=bar")
+    end
+  end
 end

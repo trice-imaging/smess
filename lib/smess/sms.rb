@@ -1,7 +1,7 @@
 module Smess
   class Sms
 
-    attr_accessor :to, :message, :originator, :output, :results
+    attr_accessor :to, :message, :originator, :output, :results, :callback_params
 
     def initialize(*args)
       opts = args.first || {}
@@ -9,6 +9,7 @@ module Smess
       @message = opts.fetch(:message, "")
       @originator = opts.fetch(:originator, nil)
       @output = opts.fetch(:output, :auto).to_sym
+      @callback_params = opts.fetch(:callback_params, nil)
     end
 
     def deliver
