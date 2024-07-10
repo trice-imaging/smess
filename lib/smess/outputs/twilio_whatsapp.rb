@@ -10,7 +10,11 @@ module Smess
     end
 
     def sender
-      {from: "whatsapp:+#{from}"}
+      if from.present?
+        {from: "whatsapp:+#{from}"}
+      else
+        super
+      end
     end
 
   end
