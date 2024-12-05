@@ -80,24 +80,25 @@ module Smess
 
     attr_accessor :results
 
-    def parts
-      @parts ||= split_parts
-    end
-
-    def split_parts
-      Smess.separate_sms(sms.message).reject { |s| s.empty? }
-    end
-
     def to
       "+#{sms.to}"
     end
 
     def sender
-      if messaging_service_sid.present?
-        {messaging_service_sid: messaging_service_sid}
+      {from: from}
+    end
+
+    def dynamic_callback_url
+      return callback_url if callback_url.nil? || callback_url.empty? || sms.callback_params.to_h.empty?
+
+      uri = URI(callback_url)
+      query = URI.encode_www_form(sms.callback_params.to_h)
+      if uri.query.nil?
+        uri.query = query
       else
-        {from: from}
+        uri.query << "&"+query
       end
+      uri.to_s
     end
 
     def send_one_sms(message)
@@ -105,10 +106,15 @@ module Smess
         opts = {
           to: to,
           body: message,
-          status_callback: callback_url,
+          status_callback: dynamic_callback_url,
           provide_feedback: true
         }
+        if message.is_a? Hash
+          opts.merge!(message)
+          opts.delete :body
+        end  
         opts.merge!(sender)
+        opts.merge!({messaging_service_sid: messaging_service_sid}) if messaging_service_sid.present?
         response = create_client_message(opts)
         result = normal_result(response)
       rescue ::Twilio::REST::RestError => e
