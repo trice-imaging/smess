@@ -89,7 +89,7 @@ describe Smess::Twilio, iso_id: "7.2.4" do
     }
     expect{
       results = subject.deliver
-    }.to raise_error
+    }.to raise_error(RuntimeError, "Hell")
 
   end
 

@@ -104,7 +104,7 @@ describe Smess::CardBoardFish do
     }
     expect{
       results = subject.deliver
-    }.to raise_error
+    }.to raise_error(RuntimeError, "Hell")
   end
 
 end

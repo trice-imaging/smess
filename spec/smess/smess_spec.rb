@@ -94,7 +94,7 @@ describe Smess do
         Smess.configure do |config|
           config.add_country_code("hello")
         end
-      }.to raise_error
+      }.to raise_error(ArgumentError, "Invalid country code")
     end
 
     it "raises when given an unknown output" do
@@ -102,7 +102,7 @@ describe Smess do
         Smess.configure do |config|
           config.add_country_code("99", :hello)
         end
-      }.to raise_error
+      }.to raise_error(ArgumentError, "Unknown output specified")
     end
 
   end
