@@ -1,5 +1,5 @@
 $:.push File.expand_path("../lib", __dir__)
-require "smess/version"
+require_relative "lib/smess/version"
 
 Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
