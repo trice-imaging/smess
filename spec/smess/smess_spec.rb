@@ -11,9 +11,9 @@ describe Smess do
       )
     }
     it "returns a populated Sms when mobule macro is invoked" do
-      sms.class.should == Smess::Sms
-      sms.to.should == '46701234567'
-      sms.output.should == :test
+      expect(sms.class).to eq(Smess::Sms)
+      expect(sms.to).to eq('46701234567')
+      expect(sms.output).to eq(:test)
     end
   end
 

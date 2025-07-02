@@ -37,7 +37,7 @@ describe Smess::Smsglobal, iso_id: "7.2.4" do
 
   it 'calls the correct http endpoint' do
     request = nil
-    HTTPI.stub(:post) { |r|
+    allow(HTTPI).to receive(:post) { |r|
       request = r
       response = HTTPI::Response.new(200, [], "")
     }
@@ -51,7 +51,7 @@ describe Smess::Smsglobal, iso_id: "7.2.4" do
 
   it 'generates correct data for a single message' do
     request = nil
-    HTTPI.stub(:post) { |r|
+    allow(HTTPI).to receive(:post) { |r|
       request = r
       response = HTTPI::Response.new(200, [], "")
     }
@@ -65,7 +65,7 @@ describe Smess::Smsglobal, iso_id: "7.2.4" do
   it 'returns a response for a successful delivey' do
     body = "OK: 0; Sent queued message ID: 45f4039261456176 SMSGlobalMsgID:4222875942530091\r\n"
     request = nil
-    HTTPI.stub(:post) { |r|
+    allow(HTTPI).to receive(:post) { |r|
       request = r
       response = HTTPI::Response.new(200, [], body)
     }
@@ -77,7 +77,7 @@ describe Smess::Smsglobal, iso_id: "7.2.4" do
 
   it 'returns a response for a failed delivey' do
     body = "ERROR: 102 SMSGlobalMsgID:\r\n"
-    HTTPI.stub(:post) { |r|
+    allow(HTTPI).to receive(:post) { |r|
       response = HTTPI::Response.new(200, [], body)
     }
     results = subject.deliver
@@ -88,7 +88,7 @@ describe Smess::Smsglobal, iso_id: "7.2.4" do
 
 
   it 'does not swallow exceptions' do
-    HTTPI.stub(:post) { |r|
+    allow(HTTPI).to receive(:post) { |r|
       raise "Hell"
     }
     expect{

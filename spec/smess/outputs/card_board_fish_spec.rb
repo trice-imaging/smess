@@ -31,7 +31,7 @@ describe Smess::CardBoardFish do
 
   it 'calls the correct http endpoint' do
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], "")
     }
@@ -45,7 +45,7 @@ describe Smess::CardBoardFish do
 
   it 'generates correct data for a single message' do
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], "200\n1")
     }
@@ -63,7 +63,7 @@ describe Smess::CardBoardFish do
   it 'returns a response for a successful delivey' do
     body = "OK 3583910"
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], body)
     }
@@ -76,7 +76,7 @@ describe Smess::CardBoardFish do
   it 'returns a response for a successful delivey including user reference' do
     body = "OK 3583910 UR:JBD829SSA"
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], body)
     }
@@ -88,7 +88,7 @@ describe Smess::CardBoardFish do
 
   it 'returns a response for a failed delivey' do
     body = "ERR -10"
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       response = HTTPI::Response.new(401, [], body)
     }
     results = subject.deliver
@@ -99,7 +99,7 @@ describe Smess::CardBoardFish do
 
 
   it 'does not swallow exceptions' do
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       raise "Hell"
     }
     expect{

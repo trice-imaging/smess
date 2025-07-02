@@ -33,7 +33,7 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
 
   it 'calls the correct http endpoint' do
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], "")
     }
@@ -46,7 +46,7 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
 
   it 'generates correct data for a single message' do
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], "200\n1")
     }
@@ -60,7 +60,7 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
   it 'returns a response for a successful delivey' do
     body = "200\n1"
     request = nil
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       request = r
       response = HTTPI::Response.new(200, [], body)
     }
@@ -72,7 +72,7 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
 
   it 'returns a response for a failed delivey' do
     body = "404\n1"
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       response = HTTPI::Response.new(200, [], body)
     }
     results = subject.deliver
@@ -83,7 +83,7 @@ describe Smess::GlobalMouth, iso_id: "7.2.4" do
 
 
   it 'does not swallow exceptions' do
-    HTTPI.stub(:get) { |r|
+    allow(HTTPI).to receive(:get) { |r|
       raise "Hell"
     }
     expect{

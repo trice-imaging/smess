@@ -12,15 +12,15 @@ describe Smess::Sms, iso_id: "7.3" do
   }
 
   it 'can be created with arguments' do
-    sms.to.should == '46701234567'
-    sms.message.should == 'Test SMS'
-    sms.originator.should == 'TestSuite'
+    expect(sms.to).to eq('46701234567')
+    expect(sms.message).to eq('Test SMS')
+    expect(sms.originator).to eq('TestSuite')
   end
 
   it 'delivering should instantiate an output object and pass itself to it' do
     results = sms.deliver
-    sms.should == Smess::Test.instance.sms
-    sms.results[:sent_with].should == :test
+    expect(sms).to eq(Smess::Test.instance.sms)
+    expect(sms.results[:sent_with]).to eq(:test)
   end
 
   it 'changing the response' do
@@ -33,8 +33,8 @@ describe Smess::Sms, iso_id: "7.3" do
       }
     }
     results = sms.deliver
-    sms.should == Smess::Test.instance.sms
-    sms.results[:sent_with].should == :test
+    expect(sms).to eq(Smess::Test.instance.sms)
+    expect(sms.results[:sent_with]).to eq(:test)
     puts sms.results
   end
 
